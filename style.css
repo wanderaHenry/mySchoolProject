@@ -1,0 +1,63 @@
+    .nav.justify-content-end .nav-link {
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: all .2s ease;
+    }
+
+    /* OPTION A: Green button with white text on hover (most common) */
+    .nav.justify-content-end .nav-link:hover {
+      background-color: #14B814;           /* Bootstrap "success" green */
+      color: #fff !important;              /* ensure text turns white */
+      
+    }
+ 
+   
+
+    /* Optional: keep the "active" item styled too */
+    .nav.justify-content-end .nav-link.active {
+      background-color: #14B814;
+      color: #fff !important;
+      border: radius 6px; ;
+    }
+
+    .hero-section {
+      position: relative;
+      background: url('./images/home.avif') no-repeat center center/cover;
+      min-height: 60vh; /* slightly shorter than full screen */
+      margin: 20px; /* leaves space from screen edges */
+      border-radius: 15px; /* optional rounded corners */
+      overflow: hidden; /* ensures overlay stays inside */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+    }
+
+    /* Green overlay */
+    .hero-section::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 128, 0, 0.4); /* green with transparency */
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2; /* keeps text above overlay */
+    }
+
+    footer {
+  background: #212529;
+  color: #fff;
+  padding: 1rem 0;
+}
+
+/* Add this new class */
+.fixed-footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
