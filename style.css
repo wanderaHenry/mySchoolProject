@@ -61,3 +61,233 @@
   bottom: 0;
   width: 100%;
 }
+.pre-footer {
+  background: #fff;        /* white background */
+  color: #2f4f2f;          /* greenish text */
+  border-top: 1px solid #ddd;
+}
+
+.pre-footer a {
+  color: #2f4f2f;          /* greenish links */
+  font-weight: 500;
+}
+
+.pre-footer a:hover {
+  color: green;
+}
+  /* register styling*/
+    body {
+      background: #f8f9fa;
+    }
+    .register-card {
+      max-width: 400px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .btn-register {
+      background: #28a745; /* green */
+      color: #fff;
+      font-weight: 600;
+    }
+    .btn-register:hover {
+      background: #218838;
+      color: #fff;
+    }
+    .form-select, .form-control {
+      border-radius: 8px;
+    }
+    /* login styling */
+    body {
+      background: #f8f9fa;
+    }
+    .login-card {
+      max-width: 400px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .btn-login {
+      background: #28a745; /* green */
+      color: #fff;
+      font-weight: 600;
+    }
+    .btn-login:hover {
+      background: #218838;
+      color: #fff;
+    }
+    .form-control {
+      border-radius: 8px;
+    }
+    .forgot-link {
+      font-size: 0.9rem;
+    }
+  /* about styling */
+  
+    body {
+      background: #f8f9fa;
+    }
+    .team-member img {
+      width: 140px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 5px solid #f0f0f0;
+      margin-bottom: 10px;
+    }
+    .team-member h6 {
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    footer {
+      background: #fff;
+      padding: 20px 0;
+      margin-top: 40px;
+      border-top: 1px solid #ddd;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+    }
+    footer a {
+      color: #555;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  /* styling for market.html */
+      body {
+      background-color: #fff;
+    }
+    .navbar-nav .nav-link.active {
+      background-color: #28a745;
+      color: #fff !important;
+      border-radius: 20px;
+      padding: 5px 15px;
+    }
+    .product-card {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .product-card img {
+      width: 120px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .product-card p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+    .price {
+      font-weight: 600;
+      color: #28a745;
+    }
+    .btn-request {
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+    .footer {
+      margin-top: 60px;
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid #ddd;
+    }
+    .footer i {
+      font-size: 22px;
+      margin: 0 8px;
+      cursor: pointer;
+    }
+
+    /* styling for welcome */
+        body {
+      background-color: #fff;
+    }
+    .navbar-nav .nav-link.active {
+      background-color: #28a745;
+      color: #fff !important;
+      border-radius: 20px;
+      padding: 5px 15px;
+    }
+    .welcome-text {
+      margin-top: 80px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .btn-custom {
+      margin: 10px;
+      padding: 8px 20px;
+      border: 1px solid #ccc;
+      background: #f8f9fa;
+      border-radius: 6px;
+    }
+    .footer {
+      margin-top: 80px;
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid #ddd;
+    }
+    .footer i {
+      font-size: 24px;
+      margin: 0 10px;
+      cursor: pointer;
+    }
+  
+    /* styling for dashboard */
+    
+    body {
+      background: #f8f9fa;
+    }
+    .sidebar {
+      min-height: 100vh;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      padding: 20px;
+    }
+    .sidebar a {
+      display: block;
+      margin: 10px 0;
+      color: #333;
+      text-decoration: none;
+    }
+    .sidebar a.active {
+      font-weight: bold;
+      color: #28a745;
+    }
+    .dashboard-content {
+      padding: 30px;
+    }
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+    .status-confirmed {
+      background: #d4edda;
+      color: #155724;
+    }
+    .status-shipped {
+      background: #cce5ff;
+      color: #004085;
+    }
+  
+     /* Override Bootstrap Success Button */
+  .btn-success {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+  }
+
+  .btn-success:hover {
+    background-color: #218838 !important; /* Slightly darker green for hover */
+    border-color: #1e7e34 !important;
+  }
