@@ -1,0 +1,93 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Farmer Dashboard
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet")
+    link(rel="stylesheet", href="/style.css")
+
+  body(data-page="dashboard")
+    .container-fluid
+      .row
+        // Sidebar
+        .col-md-3.col-lg-2.sidebar
+          h5.mb-4 Sarah Miller
+            br
+            small.text-muted Farmer
+          a.active(href="/dashboard") Dashboard
+          a(href="/products") Products
+          a(href="/orders") Orders
+          a(href="/messages") Messages
+          a(href="/settings") Settings
+
+        // Main Content
+        .col-md-9.col-lg-10.dashboard-content
+          h4.text-center Hello #{user.name}, this is your dashboard!
+
+          // Stats
+          .row.mb-4
+            .col-md-4
+              .card.p-3.shadow-sm
+                h6 Total Sales
+                h4 $12,500
+            .col-md-4
+              .card.p-3.shadow-sm
+                h6 Number of Orders
+                h4 350
+            .col-md-4
+              .card.p-3.shadow-sm
+                h6 Average Order Value
+                h4 $35.71
+
+          // Upcoming Orders
+          h5.mb-3 Upcoming Orders
+          table.table.table-bordered.bg-white.shadow-sm
+            thead
+              tr
+                th Order ID
+                th Customer
+                th Date
+                th Status
+                th Total
+            tbody
+              tr
+                td #001
+                td John Doe
+                td July 5, 2025
+                td 
+                  span.status-badge.status-pending Pending
+                td $120.00
+              tr
+                td #002
+                td Mary Jane
+                td July 6, 2025
+                td 
+                  span.status-badge.status-confirmed Confirmed
+                td $89.00
+              tr
+                td #003
+                td David Smith
+                td July 7, 2025
+                td 
+                  span.status-badge.status-shipped Shipped
+                td $200.50
+
+          // Upload Product Form
+          h5.mt-5.mb-3 Upload New Product
+          form#productForm.bg-white.p-4.shadow-sm.rounded(action="/products" method="POST" enctype="multipart/form-data")
+            .mb-3
+              label.form-label(for="productName") Product Name
+              input#productName.form-control(type="text", name="name", placeholder="e.g. Organic Tomatoes", required)
+            .mb-3
+              label.form-label(for="productDesc") Description
+              textarea#productDesc.form-control(name="description", rows="3", required)
+            .mb-3
+              label.form-label(for="productPrice") Price
+              input#productPrice.form-control(type="text", name="price", placeholder="$0.00", required)
+            .mb-3
+              label.form-label(for="productImage") Upload Product Image
+              input#productImage.form-control(type="file", name="image", required)
+            button.btn.btn-success(type="submit") Upload Product
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js")

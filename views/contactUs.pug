@@ -1,0 +1,61 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Farm Connect - Contact Us
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+    link(rel="stylesheet", href="/style.css")
+
+  body
+    // Navbar
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light.shadow-sm
+      .container
+        a.navbar-brand.fw-bold(href="/") Farm connect
+        button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
+          span.navbar-toggler-icon
+        #navbarNav.collapse.navbar-collapse.justify-content-end
+          ul.navbar-nav.me-3
+            li.nav-item
+              a.nav-link(href="/") Home
+            li.nav-item
+              a.nav-link(href="/about") About
+            li.nav-item
+              a.nav-link(href="/register") Signup
+            li.nav-item
+              a.nav-link(href="/logout") Logout
+
+
+    // Contact Us Section
+    .container.mt-5
+      .row.justify-content-center
+        .col-md-6
+          h3.text-center.mb-4 Contact Us
+          form(action="/contact" method="POST")
+            .mb-3
+              label.form-label(for="name") Full Name
+              input#name.form-control(type="text", name="name", placeholder="Enter your name", required)
+            .mb-3
+              label.form-label(for="email") Email Address
+              input#email.form-control(type="email", name="email", placeholder="Enter your email", required)
+            .mb-3
+              label.form-label(for="message") Message
+              textarea#message.form-control(name="message", rows="4", placeholder="Enter your message", required)
+            button.btn.btn-success.w-100(type="submit") Send Message
+
+    // Social Media Section
+    .container.text-center.mt-5.mb-4
+      p.fw-semibold Connect with us through our social media handles
+      div
+        a.me-3.text-decoration-none.text-dark(href="https://facebook.com", target="_blank")
+          i.fab.fa-facebook.fa-2x
+        a.me-3.text-decoration-none.text-dark(href="https://twitter.com", target="_blank")
+          i.fab.fa-twitter.fa-2x
+        a.me-3.text-decoration-none.text-dark(href="https://instagram.com", target="_blank")
+          i.fab.fa-instagram.fa-2x
+        a.text-decoration-none.text-dark(href="https://linkedin.com", target="_blank")
+          i.fab.fa-linkedin.fa-2x
+
+    // Scripts
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")

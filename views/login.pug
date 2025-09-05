@@ -1,0 +1,44 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Login Page
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet")
+    link(rel="stylesheet", href="/style.css")
+
+  body(data-page="login")
+    // Navbar
+    nav.navbar.navbar-expand-lg.bg-white.shadow-sm
+      .container
+        a.navbar-brand.fw-bold(href="/") Farm connect
+        .collapse.navbar-collapse.justify-content-end
+          ul.navbar-nav
+            li.nav-item
+              a.nav-link(href="/") Home
+            li.nav-item
+              a.nav-link(href="/about") About
+            li.nav-item
+              a.nav-link(href="/contact") Contact
+            li.nav-item
+              a.nav-link(href="/register") Sign Up
+
+    // Login Card
+    .login-card
+      h4.text-center.mb-4.fw-bold Welcome back to Farm connect
+
+      form#loginForm(action="/login" method="POST")
+        .mb-3
+          label.form-label(for="email") Email
+          input#email.form-control(type="email", name="email", placeholder="Enter your email", required)
+
+        .mb-2
+          label.form-label(for="password") Password
+          input#password.form-control(type="password", name="password", placeholder="Enter your password", required)
+
+        .mb-3
+          a.forgot-link(href="/forgot-password") Forgot Password?
+
+        button.btn.btn-login.w-100(type="submit") Login
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js")

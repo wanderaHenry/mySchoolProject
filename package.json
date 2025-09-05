@@ -1,0 +1,32 @@
+{
+  "name": "schoolproject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wanderaHenry/mySchoolProject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wanderaHenry/mySchoolProject/issues"
+  },
+  "homepage": "https://github.com/wanderaHenry/mySchoolProject#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "mongoose": "^8.18.0",
+    "nodemon": "^3.1.10",
+    "pug": "^3.0.3"
+  }
+}
