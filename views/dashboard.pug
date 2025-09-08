@@ -12,7 +12,7 @@ html(lang="en")
       .row
         // Sidebar
         .col-md-3.col-lg-2.sidebar
-          h5.mb-4 Sarah Miller
+          h5.mb-4 #{user.name}
             br
             small.text-muted Farmer
           a.active(href="/dashboard") Dashboard
@@ -30,52 +30,49 @@ html(lang="en")
             .col-md-4
               .card.p-3.shadow-sm
                 h6 Total Sales
-                h4 $12,500
+                h4 $#{totalSales}
             .col-md-4
               .card.p-3.shadow-sm
                 h6 Number of Orders
-                h4 350
+                h4 #{numberOfOrders}
             .col-md-4
               .card.p-3.shadow-sm
                 h6 Average Order Value
-                h4 $35.71
+                h4 $#{avgOrderValue}
 
           // Upcoming Orders
           h5.mb-3 Upcoming Orders
-          table.table.table-bordered.bg-white.shadow-sm
-            thead
-              tr
-                th Order ID
-                th Customer
-                th Date
-                th Status
-                th Total
-            tbody
-              tr
-                td #001
-                td John Doe
-                td July 5, 2025
-                td 
-                  span.status-badge.status-pending Pending
-                td $120.00
-              tr
-                td #002
-                td Mary Jane
-                td July 6, 2025
-                td 
-                  span.status-badge.status-confirmed Confirmed
-                td $89.00
-              tr
-                td #003
-                td David Smith
-                td July 7, 2025
-                td 
-                  span.status-badge.status-shipped Shipped
-                td $200.50
+          if orders.length > 0
+            table.table.table-bordered.bg-white.shadow-sm
+              thead
+                tr
+                  th Order ID
+                  th Customer
+                  th Date
+                  th Status
+                  th Total
+              tbody
+                each order, i in orders
+                  tr
+                    td #{order._id}
+                    td #{order.customerName}
+                    td #{order.createdAt.toDateString()}
+                    td
+                      if order.status === 'Pending'
+                        span.status-badge.status-pending Pending
+                      else if order.status === 'Confirmed'
+                        span.status-badge.status-confirmed Confirmed
+                      else if order.status === 'Shipped'
+                        span.status-badge.status-shipped Shipped
+                      else
+                        span.status-badge.status-declined Declined
+                    td $#{order.total}
+          else
+            p.text-muted No upcoming orders.
 
           // Upload Product Form
           h5.mt-5.mb-3 Upload New Product
-          form#productForm.bg-white.p-4.shadow-sm.rounded(action="/products" method="POST" enctype="multipart/form-data")
+          form#productForm.bg-white.p-4.shadow-sm.rounded(action="/products/create" method="POST" enctype="multipart/form-data")
             .mb-3
               label.form-label(for="productName") Product Name
               input#productName.form-control(type="text", name="name", placeholder="e.g. Organic Tomatoes", required)
@@ -84,7 +81,7 @@ html(lang="en")
               textarea#productDesc.form-control(name="description", rows="3", required)
             .mb-3
               label.form-label(for="productPrice") Price
-              input#productPrice.form-control(type="text", name="price", placeholder="$0.00", required)
+              input#productPrice.form-control(type="number", step="0.01", name="price", placeholder="$0.00", required)
             .mb-3
               label.form-label(for="productImage") Upload Product Image
               input#productImage.form-control(type="file", name="image", required)

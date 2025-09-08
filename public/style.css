@@ -291,3 +291,107 @@
     background-color: #218838 !important; /* Slightly darker green for hover */
     border-color: #1e7e34 !important;
   }
+
+  /* orders styling */
+  
+.container h3 {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+table.table {
+  background-color: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+table.table th {
+  background-color: #4CAF50;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+table.table td {
+  vertical-align: middle;
+}
+
+table.table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+select.form-select-sm {
+  width: auto;
+  min-width: 100px;
+}
+
+button.btn-success {
+  transition: background-color 0.3s ease;
+}
+
+button.btn-success:hover {
+  background-color: #45a049;
+}
+
+/* Responsive table scroll for small screens */
+@media (max-width: 768px) {
+  table.table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+/* Center "No orders yet" message */
+p.text-muted {
+  font-size: 16px;
+  margin-top: 20px;
+}
+/* ===== Farmer Products Styles ===== */
+.container h3 {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+table.table {
+  background-color: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+table.table th {
+  background-color: #4CAF50;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+table.table td {
+  vertical-align: middle;
+}
+
+table.table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+table.table img {
+  border-radius: 4px;
+}
+
+/* Responsive table scroll for small screens */
+@media (max-width: 768px) {
+  table.table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+p.text-muted {
+  font-size: 16px;
+  margin-top: 20px;
+}

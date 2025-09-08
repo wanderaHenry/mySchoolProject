@@ -5,21 +5,29 @@ const bcrypt = require("bcrypt");
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    region: { type: String, required: true },
+    region: { 
+      type: String, 
+      enum: ["Eastern", "Central", "Northern", "Western"], 
+      required: true 
+    },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    profilePic: { 
+      type: String, 
+      default: "/images/default-profile.png" // placeholder until farmer uploads
+    },
   },
   { timestamps: true }
 );
 
-//  hash password before saving
+// Hash password before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
-//  method to compare password during login
+// Method to compare password during login
 userSchema.methods.matchPassword = function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.password);
 };

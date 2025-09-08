@@ -3,7 +3,7 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Agric Produce on Market
+    title Agric Produce Market
     link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet")
     link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet")
     link(rel="stylesheet", href="/style.css")
@@ -11,111 +11,55 @@ html(lang="en")
   body(data-page="market")
     // Navbar
     nav.navbar.navbar-expand-lg.navbar-light.bg-white.shadow-sm.px-4
-      a.navbar-brand(href="#")
-        i.bi.bi-list(style="font-size: 1.5rem;")
-      .collapse.navbar-collapse
+      a.navbar-brand(href="/dashboard") Farm Connect
+      button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
+        span.navbar-toggler-icon
+      #navbarNav.collapse.navbar-collapse
         ul.navbar-nav.ms-auto
           li.nav-item
-            a.nav-link(href="/") Home
+            a.nav-link(href="/dashboard") Dashboard
           li.nav-item
-            a.nav-link(href="/about") About
+            a.nav-link(href="/products") My Products
           li.nav-item
-            a.nav-link(href="/contact") Contact Us
+            a.nav-link(href="/products/market") Market
+          li.nav-item
+            a.nav-link(href="/orders") Orders
+          li.nav-item
+            a.nav-link(href="/settings") Settings
           li.nav-item
             a.nav-link(href="/logout") Logout
-
-        form.d-flex.ms-3
-          input.form-control.form-control-sm.me-2(type="search", placeholder="Search")
-          button.btn.btn-outline-secondary.btn-sm(type="submit")
-            i.bi.bi-search
         img.rounded-circle.ms-3(src="https://via.placeholder.com/40", alt="Profile")
 
     // Heading
-    .container.text-center.mt-5
-      h4 Welcome To Agric-Produce on market, #{user.name}
+    .container.text-center.mt-4
+      h4 Welcome To Agric Produce Market, #{user.name}
 
     // Product Grid
     .container.mt-4
-      .row.justify-content-center
-        // Product 1
-        .col-md-2.col-sm-4.product-card
-          img(src="https://via.placeholder.com/120x100", alt="Wheat")
-          p
-            strong wheat
-            br
-            | Henry
-            br
-            | 0767172641
-          p.price UGX 120,000
-          button.btn.btn-success.btn-sm.btn-request request
-
-        // Product 2
-        .col-md-2.col-sm-4.product-card
-          img(src="https://via.placeholder.com/120x100", alt="Sweet Potatoes")
-          p
-            strong sweet-potatoes
-            br
-            | Agaba Joseph
-            br
-            | 0742927395
-          p.price UGX 80,000
-          button.btn.btn-secondary.btn-sm.btn-request request
-
-        // Product 3
-        .col-md-2.col-sm-4.product-card
-          img(src="https://via.placeholder.com/120x100", alt="Maize")
-          p
-            strong Maize
-            br
-            | Nuwamanya
-            br
-            | 0753595079
-          p.price UGX 95,000
-          button.btn.btn-secondary.btn-sm.btn-request request
-
-        // Product 4
-        .col-md-2.col-sm-4.product-card
-          img(src="https://via.placeholder.com/120x100", alt="Bull")
-          p
-            strong A bull
-            br
-            | Waiswa Joshua
-            br
-            | 0743529272
-          p.price UGX 2,500,000
-          button.btn.btn-success.btn-sm.btn-request request
-
-        // Product 5
-        .col-md-2.col-sm-4.product-card
-          img(src="https://via.placeholder.com/120x100", alt="Cassava")
-          p
-            strong Cassava
-            br
-            | Obilor Sean
-            br
-            | 0779245362
-          p.price UGX 60,000
-          button.btn.btn-secondary.btn-sm.btn-request request
-
-        // Product 6
-        .col-md-2.col-sm-4.product-card
-          img(src="https://via.placeholder.com/120x100", alt="Coffee")
-          p
-            strong Coffee
-            br
-            | Nairuba Becky
-            br
-            | 0777719211
-          p.price UGX 150,000
-          button.btn.btn-secondary.btn-sm.btn-request request
+      if products.length === 0
+        p.text-center.text-muted No products available in the market yet.
+      else
+        .row.row-cols-1.row-cols-md-3.g-4.justify-content-center
+          each product in products
+            .col
+              .card.h-100
+                if product.image
+                  img.card-img-top(src=product.image, alt=product.name)
+                else
+                  img.card-img-top(src="https://via.placeholder.com/120x100", alt=product.name)
+                .card-body
+                  h5.card-title #{product.name}
+                  p.card-text #{product.description}
+                  p.text-success $#{product.price.toLocaleString()}
+                  p.text-muted Seller: #{product.seller.name || "Unknown"}
+                  // Request form
+                  form(action="/orders/create", method="POST")
+                    input(type="hidden", name="productId", value=product._id)
+                    button.btn.btn-primary.btn-sm(type="submit") Request
 
     // Footer
-    .footer
-      div
-        i.bi.bi-twitter-x
-        i.bi.bi-facebook
-        i.bi.bi-youtube
-      p.mt-3.mb-1 henrywandera138@gmail.com
-      p.mb-0 +256767127641
+    .footer.bg-light.text-center.py-3.mt-5
+      p &copy; #{new Date().getFullYear()} Farm Connect
+      p Contact: henrywandera138@gmail.com | +256 767 127 641
 
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js")

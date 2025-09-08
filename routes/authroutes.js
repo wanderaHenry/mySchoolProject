@@ -64,9 +64,7 @@ router.get("/dashboard", requireAuth, (req, res) => {
   res.render("dashboard", { user: { name: req.session.userName } });
 });
 
-router.get("/market", requireAuth, (req, res) => {
-  res.render("market", { user: { name: req.session.userName } });
-});
+
 
 // ✅ Logout
 router.get("/logout", (req, res) => {
