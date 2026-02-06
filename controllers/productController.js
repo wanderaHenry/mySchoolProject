@@ -35,11 +35,16 @@ exports.createProduct = async (req, res) => {
 // -----------------------------
 exports.getMarket = async (req, res) => {
   try {
+    // 1. Fetch all products and populate seller details
     const products = await Product.find().populate("seller").lean();
 
+    // 2. Debugging: This will show in your terminal if data exists
+    console.log("Found products:", products.length);
+
     res.render("market", {
-      products,
-      user: { name: req.session.userName },
+      products: products || [],
+      // Ensure we pass a name even if session is missing it
+      user: { name: req.session.userName || "Farmer" },
     });
   } catch (err) {
     console.error("Error fetching market:", err);

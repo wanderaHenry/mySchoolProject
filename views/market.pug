@@ -51,7 +51,7 @@ html(lang="en")
                   h5.card-title #{product.name}
                   p.card-text #{product.description}
                   p.text-success $#{product.price.toLocaleString()}
-                  p.text-muted Seller: #{product.seller.name || "Unknown"}
+                  p.text-muted Seller: #{product.seller ? product.seller.name : "Unknown"}
                   // Request form
                   form(action="/orders/create", method="POST")
                     input(type="hidden", name="productId", value=product._id)
