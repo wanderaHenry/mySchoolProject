@@ -38,13 +38,13 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
     cookie: { maxAge: 1000 * 60 * 60 * 24 }, // 1 day
-  })
+  }),
 );
 
 // ------------------------
 // Routes
 // ------------------------
-const authRoutes = require("./routes/authRoutes");
+const authRoutes = require("./routes/authroutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const homeRoutes = require("./routes/homeRoutes");
@@ -58,6 +58,6 @@ app.use("/orders", orderRoutes);
 // Start server
 // ------------------------
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
 });
