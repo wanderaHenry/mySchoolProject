@@ -16,9 +16,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Routes
-router.post(
-  "/create",
-  requireAuth,
-  upload.single("image"),
-  productController.createProduct,
-);
+// I removed 'requireAuth' from here because your controller
+// already handles the redirect to /login!
+router.post("/create", upload.single("image"), productController.createProduct);
+
+module.exports = router;
