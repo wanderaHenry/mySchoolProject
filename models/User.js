@@ -5,19 +5,19 @@ const bcrypt = require("bcrypt");
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    region: { 
-      type: String, 
-      enum: ["Eastern", "Central", "Northern", "Western"], 
-      required: true 
+    region: {
+      type: String,
+      enum: ["Eastern", "Central", "Northern", "Western"],
+      required: true,
     },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    profilePic: { 
-      type: String, 
-      default: "/images/default-profile.png" // placeholder until farmer uploads
+    profilePic: {
+      type: String,
+      default: "/images/1770368612958-home.avif", // fallback to existing image until upload
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Hash password before saving

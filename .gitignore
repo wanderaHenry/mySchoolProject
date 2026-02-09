@@ -10,6 +10,22 @@ n
 
 # Logs
 logs
+node_modules/
+npm-debug.log*
+.env
+.env.*
+.env.local
+.DS_Store
+
+# Ignore runtime uploads (do not commit user-uploaded images)
+public/uploads/
+# If uploads remain in public/images, ignore uploads subfolder there
+public/images/uploads/
+
+# Editor directories
+.vscode/
+
+# Logs
 *.log
 npm-debug.log*
 yarn-debug.log*

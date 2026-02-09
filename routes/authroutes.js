@@ -11,7 +11,7 @@ function requireAuth(req, res, next) {
   next();
 }
 
-// ✅ Register
+// Register
 router.get("/register", (req, res) => {
   res.render("register");
 });
@@ -55,16 +55,9 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// ✅ Protected routes
-router.get("/welcome", requireAuth, (req, res) => {
-  res.render("welcome", { user: { name: req.session.userName } });
-});
-
-router.get("/dashboard", requireAuth, (req, res) => {
-  res.render("dashboard", { user: { name: req.session.userName } });
-});
-
-
+// Protected routes are handled in `homeRoutes.js` to ensure a single
+// source of truth for `/welcome` and `/dashboard`. Keep auth routes
+// focused on registration/login/logout.
 
 // ✅ Logout
 router.get("/logout", (req, res) => {
