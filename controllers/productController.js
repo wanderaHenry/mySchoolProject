@@ -17,9 +17,9 @@ exports.createProduct = async (req, res) => {
       name,
       description,
       price,
-      image: req.file ? `/images/${req.file.filename}` : null, // multer handles uploaded file
+      image: req.file ? `/images/uploads/${req.file.filename}` : null, // multer handles uploaded file
       seller: req.session.userId,
-    });
+    }); 
 
     await product.save();
 
