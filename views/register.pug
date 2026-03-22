@@ -29,6 +29,12 @@ html(lang="en")
 
       form#registerForm(action="/register" method="POST")
         .mb-3
+          select.form-select#regRole(name="role" required)
+            option(selected disabled value="") Select role
+            option(value="customer") Customer
+            option(value="farmer") Farmer
+
+        .mb-3
           select.form-select#regRegion(name="region" required)
             option(selected disabled value="") Select region
             option(value="Eastern") Eastern

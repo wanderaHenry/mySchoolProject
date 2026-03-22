@@ -18,14 +18,23 @@ router.get("/register", (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
-    const { name, region, email, password, confirmPassword } = req.body;
+    const { name, region, email, password, confirmPassword, role } = req.body;
 
     if (password !== confirmPassword) {
       return res.status(400).send("Passwords do not match");
     }
 
-    const user = new User({ name, region, email, password });
+    const user = new User({ name, region, email, password, role });
     await user.save();
+
+    // Create corresponding profile
+    if (role === "customer") {
+      const Customer = require("../models/Customer");
+      await new Customer({ userId: user._id }).save();
+    } else if (role === "farmer") {
+      const Farmer = require("../models/Farmer");
+      await new Farmer({ userId: user._id, farmName: name + "'s Farm" }).save(); // Default farm name
+    }
 
     res.redirect("/login");
   } catch (err) {
@@ -49,7 +58,15 @@ router.post("/login", async (req, res) => {
 
     req.session.userId = user._id;
     req.session.userName = user.name;
-    res.redirect("/welcome");
+
+    // Redirect based on role
+    if (user.role === "customer") {
+      res.redirect("/customer/dashboard");
+    } else if (user.role === "farmer") {
+      res.redirect("/welcome");
+    } else {
+      res.redirect("/welcome"); // Default
+    }
   } catch (err) {
     res.status(500).send("Login error: " + err.message);
   }

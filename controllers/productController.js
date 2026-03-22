@@ -19,7 +19,7 @@ exports.createProduct = async (req, res) => {
       price,
       image: req.file ? `/images/uploads/${req.file.filename}` : null, // multer handles uploaded file
       seller: req.session.userId,
-    }); 
+    });
 
     await product.save();
 
@@ -43,8 +43,7 @@ exports.getMarket = async (req, res) => {
 
     res.render("market", {
       products: products || [],
-      // Ensure we pass a name even if session is missing it
-      user: { name: req.session.userName || "Farmer" },
+      user: req.user || { name: "Guest", role: "guest" },
     });
   } catch (err) {
     console.error("Error fetching market:", err);

@@ -48,15 +48,16 @@ html(lang="en")
             each order in orders
               tr
                 td #{order.product.name}
-                td #{order.buyer.name}
+                td #{order.customerId.name}
                 td #{order.status}
                 td
                   form(action="/orders/update", method="POST", class="d-flex align-items-center")
                     input(type="hidden", name="orderId", value=order._id)
                     select.form-select.form-select-sm(name="status")
-                      option(value="Pending", selected=order.status==="Pending") Pending
-                      option(value="Confirmed", selected=order.status==="Confirmed") Confirmed
-                      option(value="Declined", selected=order.status==="Declined") Declined
+                      option(value="pending", selected=order.status==="pending") Pending
+                      option(value="approved", selected=order.status==="approved") Approved
+                      option(value="rejected", selected=order.status==="rejected") Rejected
+                      option(value="delivered", selected=order.status==="delivered") Delivered
                     button.btn.btn-success.btn-sm.ms-2(type="submit") Update
 
     // Scripts

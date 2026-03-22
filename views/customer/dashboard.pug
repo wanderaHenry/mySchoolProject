@@ -2,14 +2,76 @@ extends ../layout
 
 block head
   title Customer Dashboard
+  link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+  style.
+    body {
+      background: #f8f9fa;
+    }
+    .navbar-light .navbar-nav .nav-link:hover {
+      background-color: #28a745;
+      color: #fff !important;
+      border-radius: 6px;
+    }
+    .navbar-light .navbar-nav .nav-link.active {
+      background-color: #28a745;
+      color: #fff !important;
+      border-radius: 6px;
+    }
+    .list-group-item.active {
+      background-color: #28a745;
+      border-color: #28a745;
+      color: #fff;
+    }
+    .list-group-item:hover {
+      background-color: #e9ecef;
+      color: #28a745;
+    }
+    .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .card-header {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: #fff;
+      border-radius: 12px 12px 0 0 !important;
+      border: none;
+    }
+    .table {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .badge.bg-warning {
+      background-color: #ffc107 !important;
+      color: #000;
+    }
+    .badge.bg-success {
+      background-color: #28a745 !important;
+    }
+    .badge.bg-danger {
+      background-color: #dc3545 !important;
+    }
+    .badge.bg-info {
+      background-color: #17a2b8 !important;
+    }
+    .btn-outline-primary {
+      border-color: #28a745;
+      color: #28a745;
+    }
+    .btn-outline-primary:hover {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
 
 block content
   .container-fluid
     // Navbar
-    nav.navbar.navbar-expand-lg.navbar-light.bg-light
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light.shadow-sm
       .container-fluid
-        a.navbar-brand(href="/") Home
+        a.navbar-brand.fw-bold(href="/", style="color: #28a745;") Farm Connect
         .navbar-nav.ms-auto
+          li.nav-item
+            a.nav-link(href="/products/market") Market
           li.nav-item
             a.nav-link(href="/customer/dashboard") Dashboard
           li.nav-item
@@ -19,48 +81,80 @@ block content
           li.nav-item
             a.nav-link(href="/logout") Logout
 
-    .row
+    .row.mt-4
       // Sidebar
-      .col-md-3
-        .list-group
-          a.list-group-item.list-group-item-action.active(href="/customer/dashboard") Dashboard
-          a.list-group-item.list-group-item-action(href="/orders") My Orders
-          a.list-group-item.list-group-item-action(href="/settings") Settings
+      .col-md-3.mb-4
+        .card.shadow-sm
+          .card-header.bg-success.text-white
+            h6.mb-0
+              i.fas.fa-tachometer-alt.me-2
+              | Dashboard Menu
+          .list-group.list-group-flush
+            a.list-group-item.list-group-item-action(href="/products/market")
+              i.fas.fa-store.me-2
+              | Market
+            a.list-group-item.list-group-item-action.active(href="/customer/dashboard")
+              i.fas.fa-chart-line.me-2
+              | Dashboard
+            a.list-group-item.list-group-item-action(href="/orders")
+              i.fas.fa-list.me-2
+              | My Orders
+            a.list-group-item.list-group-item-action(href="/settings")
+              i.fas.fa-cog.me-2
+              | Settings
 
       // Main Content
       .col-md-9
-        h2.mt-4 Customer Dashboard
+        .mt-4.mt-md-0
+          h2.text-success.fw-bold Customer Dashboard
+          p.lead Welcome back! Here you can track all your orders.
         .card.mt-4
-          .card-header
-            h5 My Orders
+          .card-header.d-flex.justify-content-between.align-items-center
+            h5.mb-0 My Orders
+            small.text-light #{orders ? orders.length : 0} total orders
           .card-body
             if orders && orders.length > 0
-              table.table.table-striped
-                thead
-                  tr
-                    th Product Name
-                    th Quantity
-                    th Farmer Name
-                    th Status
-                    th Date
-                tbody
-                  each order in orders
+              .table-responsive
+                table.table.table-striped.table-hover
+                  thead.table-light
                     tr
-                      td= order.product
-                      td= order.quantity
-                      td= order.farmerId ? order.farmerId.name : 'Unknown'
-                      td
-                        case order.status
-                          when 'pending'
-                            span.badge.bg-warning Pending
-                          when 'approved'
-                            span.badge.bg-success Approved
-                          when 'rejected'
-                            span.badge.bg-danger Rejected
-                          when 'delivered'
-                            span.badge.bg-info Delivered
-                          default
-                            span.badge.bg-secondary= order.status
-                      td= order.createdAt.toDateString()
+                      th Product Name
+                      th Quantity
+                      th Farmer Name
+                      th Status
+                      th Date
+                  tbody
+                    each order in orders
+                      tr
+                        td.fw-semibold= order.product.name
+                        td= order.quantity
+                        td= order.farmerId ? order.farmerId.name : 'Unknown'
+                        td
+                          case order.status
+                            when 'pending'
+                              span.badge.bg-warning
+                                i.fas.fa-clock.me-1
+                                | Pending
+                            when 'approved'
+                              span.badge.bg-success
+                                i.fas.fa-check.me-1
+                                | Approved
+                            when 'rejected'
+                              span.badge.bg-danger
+                                i.fas.fa-times.me-1
+                                | Rejected
+                            when 'delivered'
+                              span.badge.bg-info
+                                i.fas.fa-truck.me-1
+                                | Delivered
+                            default
+                              span.badge.bg-secondary= order.status
+                        td= order.createdAt.toLocaleDateString()
             else
-              p No orders found. Start shopping to see your orders here!
+              .text-center.py-5
+                i.fas.fa-shopping-cart.fa-3x.text-muted.mb-3
+                h5.text-muted No orders yet
+                p.text-muted Start shopping in our market to see your orders here.
+                a.btn.btn-success(href="/products/market")
+                  i.fas.fa-store.me-2
+                  | Browse Market

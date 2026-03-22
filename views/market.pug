@@ -11,19 +11,27 @@ html(lang="en")
   body(data-page="market")
     // Navbar
     nav.navbar.navbar-expand-lg.navbar-light.bg-white.shadow-sm.px-4
-      a.navbar-brand(href="/dashboard") Farm Connect
+      a.navbar-brand(href="/") Farm Connect
       button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
         span.navbar-toggler-icon
       #navbarNav.collapse.navbar-collapse
         ul.navbar-nav.ms-auto
-          li.nav-item
-            a.nav-link(href="/dashboard") Dashboard
-          li.nav-item
-            a.nav-link(href="/products") My Products
-          li.nav-item
-            a.nav-link(href="/products/market") Market
-          li.nav-item
-            a.nav-link(href="/orders") Orders
+          if user.role === "customer"
+            li.nav-item
+              a.nav-link(href="/products/market") Market
+            li.nav-item
+              a.nav-link(href="/customer/dashboard") Dashboard
+            li.nav-item
+              a.nav-link(href="/orders") My Orders
+          else if user.role === "farmer"
+            li.nav-item
+              a.nav-link(href="/dashboard") Dashboard
+            li.nav-item
+              a.nav-link(href="/products") My Products
+            li.nav-item
+              a.nav-link(href="/products/market") Market
+            li.nav-item
+              a.nav-link(href="/orders") Orders
           li.nav-item
             a.nav-link(href="/settings") Settings
           li.nav-item
@@ -55,6 +63,8 @@ html(lang="en")
                   // Request form
                   form(action="/orders/create", method="POST")
                     input(type="hidden", name="productId", value=product._id)
+                    .input-group.mb-2
+                      input.form-control(type="number", name="quantity", placeholder="Quantity", min="1", required)
                     button.btn.btn-primary.btn-sm(type="submit") Request
 
     // Footer
