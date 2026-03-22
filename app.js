@@ -39,6 +39,10 @@ app.use(
   }),
 );
 
+// Attach user to req
+const { attachUser } = require("./controllers/authController");
+app.use(attachUser);
+
 // ------------------------
 // Routes
 // ------------------------
@@ -46,11 +50,13 @@ const authRoutes = require("./routes/authroutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const homeRoutes = require("./routes/homeRoutes");
+const customerRoutes = require("./routes/customerRoutes");
 
 app.use("/", homeRoutes);
 app.use("/", authRoutes);
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
+app.use("/customer", customerRoutes);
 
 // ------------------------
 // Start server

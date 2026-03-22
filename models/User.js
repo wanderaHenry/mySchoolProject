@@ -12,6 +12,11 @@ const userSchema = new mongoose.Schema(
     },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    role: {
+      type: String,
+      enum: ["customer", "farmer"],
+      required: true,
+    },
     profilePic: {
       type: String,
       default: "/images/1770368612958-home.avif", // fallback to existing image until upload

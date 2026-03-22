@@ -1,0 +1,66 @@
+extends ../layout
+
+block head
+  title Customer Dashboard
+
+block content
+  .container-fluid
+    // Navbar
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light
+      .container-fluid
+        a.navbar-brand(href="/") Home
+        .navbar-nav.ms-auto
+          li.nav-item
+            a.nav-link(href="/customer/dashboard") Dashboard
+          li.nav-item
+            a.nav-link(href="/orders") My Orders
+          li.nav-item
+            a.nav-link(href="/profile") Profile
+          li.nav-item
+            a.nav-link(href="/logout") Logout
+
+    .row
+      // Sidebar
+      .col-md-3
+        .list-group
+          a.list-group-item.list-group-item-action.active(href="/customer/dashboard") Dashboard
+          a.list-group-item.list-group-item-action(href="/orders") My Orders
+          a.list-group-item.list-group-item-action(href="/settings") Settings
+
+      // Main Content
+      .col-md-9
+        h2.mt-4 Customer Dashboard
+        .card.mt-4
+          .card-header
+            h5 My Orders
+          .card-body
+            if orders && orders.length > 0
+              table.table.table-striped
+                thead
+                  tr
+                    th Product Name
+                    th Quantity
+                    th Farmer Name
+                    th Status
+                    th Date
+                tbody
+                  each order in orders
+                    tr
+                      td= order.product
+                      td= order.quantity
+                      td= order.farmerId ? order.farmerId.name : 'Unknown'
+                      td
+                        case order.status
+                          when 'pending'
+                            span.badge.bg-warning Pending
+                          when 'approved'
+                            span.badge.bg-success Approved
+                          when 'rejected'
+                            span.badge.bg-danger Rejected
+                          when 'delivered'
+                            span.badge.bg-info Delivered
+                          default
+                            span.badge.bg-secondary= order.status
+                      td= order.createdAt.toDateString()
+            else
+              p No orders found. Start shopping to see your orders here!
