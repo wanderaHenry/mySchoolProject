@@ -28,8 +28,6 @@ router.get("/contact", (req, res) => {
   res.render("contactUs");
 });
 
-
-
 // Welcome
 router.get("/welcome", requireAuth, async (req, res) => {
   try {
@@ -48,29 +46,37 @@ router.get("/dashboard", requireAuth, async (req, res) => {
 
     if (!user) return res.redirect("/login");
 
+    if (user.role !== "farmer") return res.redirect("/customer/dashboard");
+
     // Fetch this farmer's products
     const products = await Product.find({ seller: user._id }).lean();
 
     // Fetch this farmer's orders (linked to their products)
-    const orders = await Order.find({ product: { $in: products.map(p => p._id) } })
+    const orders = await Order.find({ farmerId: user._id })
       .populate("product")
-      .populate("buyer")
+      .populate("customerId", "name")
       .lean();
 
     // Calculate stats
     const totalSales = orders
-      .filter(o => o.status === "Confirmed" || o.status === "Delivered")
-      .reduce((sum, o) => sum + o.total, 0);
+      .filter((o) => o.status === "paid" || o.status === "delivered")
+      .reduce((sum, o) => {
+        const price = o.product && o.product.price ? o.product.price : 0;
+        return sum + o.quantity * price;
+      }, 0);
 
     const numberOfOrders = orders.length;
 
-    const avgOrderValue = numberOfOrders > 0 ? (totalSales / numberOfOrders).toFixed(2) : 0;
+    const avgOrderValue =
+      numberOfOrders > 0 ? (totalSales / numberOfOrders).toFixed(2) : 0;
 
-    res.render("dashboard", { 
-      user, 
-      products, 
-      orders, 
-      stats: { totalSales, numberOfOrders, avgOrderValue } 
+    res.render("dashboard", {
+      user,
+      products,
+      orders,
+      totalSales,
+      numberOfOrders,
+      avgOrderValue,
     });
   } catch (err) {
     console.error(err);

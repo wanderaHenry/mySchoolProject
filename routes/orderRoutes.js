@@ -12,4 +12,11 @@ router.post("/create", isAuthenticated, orderController.createOrder);
 // Seller updates order status
 router.post("/update", isAuthenticated, orderController.updateOrderStatus);
 
+// Payment processing
+router.post(
+  "/payment/process",
+  isAuthenticated,
+  orderController.processPayment,
+);
+
 module.exports = router;

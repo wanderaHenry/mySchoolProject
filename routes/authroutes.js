@@ -18,13 +18,18 @@ router.get("/register", (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
-    const { name, region, email, password, confirmPassword, role } = req.body;
+    const { name, region, email, phone, password, confirmPassword, role } =
+      req.body;
 
     if (password !== confirmPassword) {
       return res.status(400).send("Passwords do not match");
     }
 
-    const user = new User({ name, region, email, password, role });
+    if (!phone) {
+      return res.status(400).send("Phone number is required");
+    }
+
+    const user = new User({ name, region, email, phone, password, role });
     await user.save();
 
     // Create corresponding profile

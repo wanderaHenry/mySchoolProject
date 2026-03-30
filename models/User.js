@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     email: { type: String, required: true, unique: true },
+    phone: { type: String, required: true }, // Added phone for contact information, now required
     password: { type: String, required: true },
     role: {
       type: String,

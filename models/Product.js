@@ -6,6 +6,7 @@ const productSchema = new mongoose.Schema(
     name: { type: String, required: true },
     description: { type: String },
     price: { type: Number, required: true },
+    quantity: { type: Number, default: 0 }, // Added quantity available for products
     image: { type: String }, // file path or image URL
     seller: {
       type: mongoose.Schema.Types.ObjectId,
@@ -13,7 +14,7 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Product", productSchema);

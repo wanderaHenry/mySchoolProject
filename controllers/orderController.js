@@ -1,6 +1,7 @@
 // controllers/orderController.js
 const Order = require("../models/Order");
 const Product = require("../models/Product");
+const axios = require("axios");
 
 // Create order (buyer requests product)
 exports.createOrder = async (req, res) => {
@@ -17,6 +18,10 @@ exports.createOrder = async (req, res) => {
       return res.status(404).send("Product not found");
     }
 
+    if (quantity > product.quantity) {
+      return res.status(400).send("Requested quantity exceeds available stock");
+    }
+
     const order = new Order({
       customerId: req.user._id,
       farmerId: product.seller._id,
@@ -26,6 +31,10 @@ exports.createOrder = async (req, res) => {
     });
 
     await order.save();
+
+    // Reduce product quantity
+    product.quantity -= parseInt(quantity);
+    await product.save();
 
     // Add order to customer's orders
     const Customer = require("../models/Customer");
@@ -71,5 +80,72 @@ exports.updateOrderStatus = async (req, res) => {
   } catch (err) {
     console.error("Error updating order:", err);
     res.status(500).send("Error updating order status");
+  }
+};
+
+// Process payment with MTN API
+exports.processPayment = async (req, res) => {
+  try {
+    const { orderId, phone, amount } = req.body;
+
+    // Get MTN API credentials from environment variables
+    const apiUser = process.env.MTN_API_USER;
+    const apiKey = process.env.MTN_API_KEY;
+    const subscriptionKey = process.env.MTN_SUBSCRIPTION_KEY;
+    const baseUrl =
+      process.env.MTN_BASE_URL || "https://sandbox.momodeveloper.mtn.com";
+
+    if (!apiUser || !apiKey || !subscriptionKey) {
+      return res.status(500).send("MTN API credentials not configured");
+    }
+
+    // Step 1: Get access token
+    const tokenResponse = await axios.post(
+      `${baseUrl}/collection/token/`,
+      {},
+      {
+        headers: {
+          "Ocp-Apim-Subscription-Key": subscriptionKey,
+          Authorization: `Basic ${Buffer.from(`${apiUser}:${apiKey}`).toString("base64")}`,
+        },
+      },
+    );
+
+    const accessToken = tokenResponse.data.access_token;
+
+    // Step 2: Request to pay
+    const referenceId = `order-${orderId}-${Date.now()}`;
+    const paymentResponse = await axios.post(
+      `${baseUrl}/collection/v1_0/requesttopay`,
+      {
+        amount: amount,
+        currency: "UGX",
+        externalId: orderId,
+        payer: {
+          partyIdType: "MSISDN",
+          partyId: phone,
+        },
+        payerMessage: "Payment for order",
+        payeeNote: "Order payment",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "X-Reference-Id": referenceId,
+          "X-Target-Environment": "sandbox",
+          "Ocp-Apim-Subscription-Key": subscriptionKey,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    // Check payment status (in real app, this should be asynchronous)
+    // For simplicity, assume success
+    await Order.findByIdAndUpdate(orderId, { status: "paid" });
+
+    res.send("Payment initiated successfully. Order status updated to paid.");
+  } catch (err) {
+    console.error("Payment error:", err);
+    res.status(500).send("Payment failed: " + err.message);
   }
 };

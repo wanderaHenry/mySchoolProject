@@ -121,6 +121,7 @@ block content
                       th Product Name
                       th Quantity
                       th Farmer Name
+                      th Farmer Contact
                       th Status
                       th Date
                   tbody
@@ -129,6 +130,7 @@ block content
                         td.fw-semibold= order.product.name
                         td= order.quantity
                         td= order.farmerId ? order.farmerId.name : 'Unknown'
+                        td= order.farmerId ? order.farmerId.phone : 'N/A'
                         td
                           case order.status
                             when 'pending'
@@ -136,13 +138,22 @@ block content
                                 i.fas.fa-clock.me-1
                                 | Pending
                             when 'approved'
+                              - var amount = order.quantity * order.product.price
                               span.badge.bg-success
                                 i.fas.fa-check.me-1
                                 | Approved
+                              br
+                              // Added payment button for approved orders with MTN integration
+                              button.btn.btn-sm.btn-primary.mt-1(data-bs-toggle="modal" data-bs-target="#paymentModal" data-order-id=order._id data-amount=amount) Proceed to Payment
                             when 'rejected'
                               span.badge.bg-danger
                                 i.fas.fa-times.me-1
                                 | Rejected
+                            when 'paid'
+                              span.badge.bg-primary
+                                i.fas.fa-credit-card.me-1
+                                | Paid
+                            // Added paid status for completed payments
                             when 'delivered'
                               span.badge.bg-info
                                 i.fas.fa-truck.me-1
@@ -158,3 +169,65 @@ block content
                 a.btn.btn-success(href="/products/market")
                   i.fas.fa-store.me-2
                   | Browse Market
+
+  // Payment Modal for MTN API integration
+  #paymentModal.modal.fade(tabindex="-1")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h5.modal-title Payment for Order
+          button.btn-close(type="button" data-bs-dismiss="modal")
+        .modal-body
+          p You are about to pay for the approved order.
+          // MTN Payment Integration
+          form#paymentForm(action="/orders/payment/process" method="POST")
+            input(type="hidden" name="orderId" id="modalOrderId")
+            .mb-3
+              label.form-label(for="phone") MTN Phone Number
+              input#phone.form-control(type="tel" name="phone" placeholder="e.g. 256700000000" value=user.phone required)
+            .mb-3
+              label.form-label(for="amount") Amount
+              input#amount.form-control(type="number" name="amount" readonly)
+            button.btn.btn-success(type="submit") Pay with MTN
+
+  script.
+    // Set order ID and amount in modal
+    const paymentModal = document.getElementById('paymentModal');
+    paymentModal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+      const orderId = button.getAttribute('data-order-id');
+      const amount = button.getAttribute('data-amount');
+      document.getElementById('modalOrderId').value = orderId;
+      document.getElementById('amount').value = amount;
+    });
+
+  // Payment Modal for MTN API integration
+  #paymentModal.modal.fade(tabindex="-1")
+    .modal-dialog
+      .modal-content
+        .modal-header(style="background: linear-gradient(135deg, #ffc107, #ffeb3b); color: #000;")
+          h5.modal-title Payment for Order
+          button.btn-close(type="button" data-bs-dismiss="modal")
+        .modal-body
+          p You are about to pay for the approved order.
+          // MTN Payment Integration Placeholder
+          form#paymentForm(action="/payment/process" method="POST")
+            input(type="hidden" name="orderId" id="modalOrderId")
+            .mb-3
+              label.form-label(for="phone") MTN Phone Number
+              input#phone.form-control(type="tel" name="phone" placeholder="e.g. 256700000000" required)
+            .mb-3
+              label.form-label(for="amount") Amount
+              input#amount.form-control(type="number" name="amount" min="0" step="0.01" required)
+            button.btn.btn-warning(type="submit") Pay with MTN
+
+  script.
+    // Set order ID and amount in modal
+    const paymentModal = document.getElementById('paymentModal');
+    paymentModal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+      const orderId = button.getAttribute('data-order-id');
+      const amount = button.getAttribute('data-amount');
+      document.getElementById('modalOrderId').value = orderId;
+      document.getElementById('amount').value = amount;
+    });
