@@ -6,7 +6,12 @@ const axios = require("axios");
 // Create order (buyer requests product)
 exports.createOrder = async (req, res) => {
   try {
-    if (!req.user) {
+    if (!req.session.userId) {
+      return res.redirect("/login");
+    }
+
+    const user = await require("../models/User").findById(req.session.userId);
+    if (!user) {
       return res.redirect("/login");
     }
 
@@ -23,7 +28,7 @@ exports.createOrder = async (req, res) => {
     }
 
     const order = new Order({
-      customerId: req.user._id,
+      customerId: user._id,
       farmerId: product.seller._id,
       product: product._id,
       quantity: parseInt(quantity),
@@ -53,11 +58,16 @@ exports.createOrder = async (req, res) => {
 // Get all orders for logged-in farmer (seller)
 exports.getOrders = async (req, res) => {
   try {
-    if (!req.user) {
+    if (!req.session.userId) {
       return res.redirect("/login");
     }
 
-    const orders = await Order.find({ farmerId: req.user._id })
+    const user = await require("../models/User").findById(req.session.userId);
+    if (!user || user.role !== "farmer") {
+      return res.status(403).send("Access denied");
+    }
+
+    const orders = await Order.find({ farmerId: user._id })
       .populate("product")
       .populate("customerId", "name")
       .lean();
@@ -73,6 +83,20 @@ exports.getOrders = async (req, res) => {
 exports.updateOrderStatus = async (req, res) => {
   try {
     const { orderId, status } = req.body;
+
+    if (!req.session.userId) {
+      return res.redirect("/login");
+    }
+
+    const user = await require("../models/User").findById(req.session.userId);
+    if (!user || user.role !== "farmer") {
+      return res.status(403).send("Access denied");
+    }
+
+    const order = await Order.findById(orderId);
+    if (!order || order.farmerId.toString() !== user._id.toString()) {
+      return res.status(403).send("Not authorized");
+    }
 
     await Order.findByIdAndUpdate(orderId, { status });
 

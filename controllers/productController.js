@@ -54,7 +54,16 @@ exports.getMarket = async (req, res) => {
 // -----------------------------
 exports.getFarmerProducts = async (req, res) => {
   try {
-    const products = await Product.find({ seller: req.session.userId }).lean();
+    if (!req.session.userId) {
+      return res.redirect("/login");
+    }
+
+    const user = await require("../models/User").findById(req.session.userId);
+    if (!user || user.role !== "farmer") {
+      return res.status(403).send("Access denied");
+    }
+
+    const products = await Product.find({ seller: user._id }).lean();
 
     res.render("products", { products });
   } catch (err) {
@@ -68,12 +77,21 @@ exports.getFarmerProducts = async (req, res) => {
 // -----------------------------
 exports.deleteProduct = async (req, res) => {
   try {
+    if (!req.session.userId) {
+      return res.redirect("/login");
+    }
+
+    const user = await require("../models/User").findById(req.session.userId);
+    if (!user || user.role !== "farmer") {
+      return res.status(403).send("Access denied");
+    }
+
     const productId = req.params.id;
 
     // Ensure the product belongs to the logged-in farmer
     const product = await Product.findOne({
       _id: productId,
-      seller: req.session.userId,
+      seller: user._id,
     });
 
     if (!product) {

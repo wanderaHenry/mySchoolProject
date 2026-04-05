@@ -30,19 +30,6 @@ app.use(
   }),
 );
 
-// Attach user to req
-app.use(async (req, res, next) => {
-  if (req.session && req.session.userId) {
-    try {
-      const User = require("./models/User");
-      req.user = await User.findById(req.session.userId);
-    } catch (error) {
-      console.error("Error attaching user:", error);
-    }
-  }
-  next();
-});
-
 // Routes
 const homeRoutes = require("./routes/homeRoutes");
 const authRoutes = require("./routes/authroutes");
