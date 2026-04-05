@@ -39,9 +39,9 @@ const customerRoutes = require("./routes/customerRoutes");
 
 app.use("/", homeRoutes);
 app.use("/", authRoutes);
-app.use("/", productRoutes);
-app.use("/", orderRoutes);
-app.use("/", customerRoutes);
+app.use("/products", productRoutes);
+app.use("/orders", orderRoutes);
+app.use("/customer", customerRoutes);
 
 // ------------------------
 // MongoDB connection

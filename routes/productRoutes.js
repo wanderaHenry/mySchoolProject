@@ -14,13 +14,13 @@ router.post(
   productController.createProduct,
 );
 
-// Farmer's products (mounted at /products)
+// Farmer's products
 router.get("/", isAuthenticated, productController.getFarmerProducts);
 
 // Delete product
 router.post("/delete/:id", isAuthenticated, productController.deleteProduct);
 
-// Market view for all users (mounted at /products/market)
+// Market view for all users
 router.get("/market", productController.getMarket);
 
 module.exports = router;
