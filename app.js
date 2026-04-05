@@ -19,9 +19,51 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
+// Session middleware
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+    cookie: { maxAge: 1000 * 60 * 60 * 24 }, // 1 day
+  }),
+);
+
+// Attach user to req
+app.use(async (req, res, next) => {
+  if (req.session && req.session.userId) {
+    try {
+      const User = require("./models/User");
+      req.user = await User.findById(req.session.userId);
+    } catch (error) {
+      console.error("Error attaching user:", error);
+    }
+  }
+  next();
+});
+
+// Routes
+const homeRoutes = require("./routes/homeRoutes");
+const authRoutes = require("./routes/authroutes");
+const productRoutes = require("./routes/productRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+const customerRoutes = require("./routes/customerRoutes");
+
+app.use("/", homeRoutes);
+app.use("/", authRoutes);
+app.use("/", productRoutes);
+app.use("/", orderRoutes);
+app.use("/", customerRoutes);
+
 // ------------------------
 // MongoDB connection
 // ------------------------
+if (!process.env.MONGO_URI) {
+  console.error("MONGO_URI environment variable is not set");
+  process.exit(1);
+}
+
 mongoose
   .connect(process.env.MONGO_URI, {
     serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s

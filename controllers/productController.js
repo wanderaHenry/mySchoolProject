@@ -39,9 +39,6 @@ exports.getMarket = async (req, res) => {
     // 1. Fetch all products and populate seller details
     const products = await Product.find().populate("seller").lean();
 
-    // 2. Debugging: This will show in your terminal if data exists
-    console.log("Found products:", products.length);
-
     res.render("market", {
       products: products || [],
       user: req.user || { name: "Guest", role: "guest" },
