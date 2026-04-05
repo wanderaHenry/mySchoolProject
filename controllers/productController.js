@@ -13,12 +13,21 @@ exports.createProduct = async (req, res) => {
 
     const { name, description, price, quantity } = req.body; // Added quantity
 
+    // Handle image path - use fallback if file upload failed
+    let imagePath = null;
+    if (req.file && req.file.filename) {
+      imagePath = `/images/uploads/${req.file.filename}`;
+    } else {
+      // Fallback to default image if no file was uploaded
+      imagePath = "/images/1770368612958-home.avif";
+    }
+
     const product = new Product({
       name,
       description,
       price,
       quantity: parseInt(quantity) || 0, // Added quantity
-      image: req.file ? `/images/uploads/${req.file.filename}` : null, // multer handles uploaded file
+      image: imagePath,
       seller: req.session.userId,
     });
 
@@ -27,7 +36,7 @@ exports.createProduct = async (req, res) => {
     res.redirect("/dashboard");
   } catch (err) {
     console.error("Product upload error:", err);
-    res.status(500).send("Error uploading product");
+    res.status(500).send("Error uploading product: " + err.message);
   }
 };
 
