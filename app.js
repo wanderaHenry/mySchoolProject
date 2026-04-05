@@ -23,45 +23,21 @@ app.set("views", path.join(__dirname, "views"));
 // MongoDB connection
 // ------------------------
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB connection error:", err));
-// ------------------------
-// Sessions
-// ------------------------
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "supersecret",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
-    cookie: { maxAge: 1000 * 60 * 60 * 24 }, // 1 day
-  }),
-);
-
-// Attach user to req
-const { attachUser } = require("./controllers/authController");
-app.use(attachUser);
-
-// ------------------------
-// Routes
-// ------------------------
-const authRoutes = require("./routes/authroutes");
-const productRoutes = require("./routes/productRoutes");
-const orderRoutes = require("./routes/orderRoutes");
-const homeRoutes = require("./routes/homeRoutes");
-const customerRoutes = require("./routes/customerRoutes");
-
-app.use("/", homeRoutes);
-app.use("/", authRoutes);
-app.use("/products", productRoutes);
-app.use("/orders", orderRoutes);
-app.use("/customer", customerRoutes);
-
-// ------------------------
-// Start server
-// ------------------------
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  .connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+  })
+  .then(() => {
+    console.log("MongoDB connected");
+    // ------------------------
+    // Start server only after DB connection
+    // ------------------------
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1); // Exit the process if DB connection fails
+  });
