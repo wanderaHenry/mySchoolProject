@@ -9,8 +9,8 @@ const MongoStore = require("connect-mongo");
 const app = express();
 
 // Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "2mb" }));
+app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
@@ -54,7 +54,8 @@ if (!process.env.MONGO_URI) {
 mongoose
   .connect(process.env.MONGO_URI, {
     serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
-    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+    connectTimeoutMS: 10000, // Fail fast if Atlas is unreachable
+    socketTimeoutMS: 30000, // Close sockets after 30 seconds of inactivity
   })
   .then(() => {
     console.log("MongoDB connected");
