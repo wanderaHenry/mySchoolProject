@@ -30,13 +30,17 @@ app.use(
   }),
 );
 
+const authController = require("./controllers/authController");
+
+// Attach user data to every request and template
+app.use(authController.attachUser);
+
 // Routes
 const homeRoutes = require("./routes/homeRoutes");
 const authRoutes = require("./routes/authroutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const customerRoutes = require("./routes/customerRoutes");
-
 app.use("/", homeRoutes);
 app.use("/", authRoutes);
 app.use("/products", productRoutes);

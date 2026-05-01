@@ -18,6 +18,10 @@ router.get("/", (req, res) => {
   res.render("index");
 });
 
+router.get("/index", (req, res) => {
+  res.render("index");
+});
+
 // About
 router.get("/about", (req, res) => {
   res.render("about");
@@ -82,6 +86,37 @@ router.get("/dashboard", requireAuth, async (req, res) => {
     console.error(err);
     res.status(500).send("Server error");
   }
+});
+
+// Settings
+router.get("/settings", function (req, res) {
+  res.send("settings");
+});
+
+// Change region
+router.post("/change-region", requireAuth, function (req, res) {
+  var region = req.body.region;
+  User.findByIdAndUpdate(req.session.userId, { region: region })
+    .then(function () {
+      res.redirect("/welcome");
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).send("Server error");
+    });
+});
+
+// Update settings
+router.post("/settings", requireAuth, function (req, res) {
+  var region = req.body.region;
+  User.findByIdAndUpdate(req.session.userId, { region: region })
+    .then(function () {
+      res.redirect("/welcome");
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).send("Server error");
+    });
 });
 
 module.exports = router;

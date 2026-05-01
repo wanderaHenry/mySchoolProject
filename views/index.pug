@@ -15,15 +15,43 @@ html(lang="en")
 
   body(data-page="home")
     // Navbar
-    ul.nav.justify-content-end
-      li.nav-item
-        a.nav-link(href="/about") AboutUs
-      li.nav-item
-        a.nav-link(href="/contact") ContactUs
-      li.nav-item
-        a.nav-link(href="/login") Login
-      li.nav-item
-        a.nav-link(href="/register") Register
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light.shadow-sm
+      .container
+        a.navbar-brand.fw-bold(href="/") Farm Connect
+        button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
+          span.navbar-toggler-icon
+        #navbarNav.collapse.navbar-collapse.justify-content-end
+          ul.navbar-nav.me-3
+            if user
+              li.nav-item
+                a.nav-link(href="/welcome") Home
+              li.nav-item
+                a.nav-link(href="/products/market") Market
+              if user.role === "farmer"
+                li.nav-item
+                  a.nav-link(href="/dashboard") Dashboard
+                li.nav-item
+                  a.nav-link(href="/products") My Products
+                li.nav-item
+                  a.nav-link(href="/orders") Orders
+              else if user.role === "customer"
+                li.nav-item
+                  a.nav-link(href="/customer/dashboard") Dashboard
+                li.nav-item
+                  a.nav-link(href="/orders") My Orders
+              li.nav-item
+                a.nav-link(href="/logout") Logout
+            else
+              li.nav-item
+                a.nav-link(href="/") Home
+              li.nav-item
+                a.nav-link(href="/about") About
+              li.nav-item
+                a.nav-link(href="/contact") Contact
+              li.nav-item
+                a.nav-link(href="/login") Login
+              li.nav-item
+                a.nav-link(href="/register") Register
 
     // Hero Section
     .hero-section

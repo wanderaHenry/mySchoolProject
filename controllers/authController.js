@@ -21,14 +21,18 @@ exports.restrictTo = (...roles) => {
   };
 };
 
-// Assuming there's a middleware to attach user to req
+// Middleware to attach user to req and template locals
 exports.attachUser = async (req, res, next) => {
   if (req.session && req.session.userId) {
     try {
       req.user = await User.findById(req.session.userId);
+      res.locals.user = req.user;
     } catch (error) {
       console.error("Error attaching user:", error);
+      res.locals.user = null;
     }
+  } else {
+    res.locals.user = null;
   }
   next();
 };

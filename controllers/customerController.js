@@ -17,7 +17,7 @@ exports.getCustomerDashboard = async (req, res) => {
     // Fetch all orders for the logged-in customer
     const orders = await Order.find({ customerId: user._id })
       .populate("farmerId", "name phone") // Populate farmer details including phone
-      .populate("product", "name") // Populate product name
+      .populate("product", "name price") // Populate product name and price
       .sort({ createdAt: -1 }); // Sort by latest
 
     // Render the dashboard with orders data

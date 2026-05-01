@@ -12,22 +12,23 @@ html(lang="en")
 
   body(data-page="about")
     // Navbar
-    nav.navbar.navbar-expand-lg.bg-white.shadow-sm
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light.shadow-sm
       .container
-        a.navbar-brand.fw-bold(href="/") Farm connect
-        .collapse.navbar-collapse.justify-content-end
-          ul.navbar-nav
+        a.navbar-brand.fw-bold(href="/") Farm Connect
+        button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
+          span.navbar-toggler-icon
+        #navbarNav.collapse.navbar-collapse.justify-content-end
+          ul.navbar-nav.me-3
             li.nav-item
               a.nav-link(href="/") Home
             li.nav-item
+              a.nav-link(href="/about") About
+            li.nav-item
               a.nav-link(href="/contact") Contact
             li.nav-item
-              a.nav-link(href="/register") Sign Up
+              a.nav-link(href="/login") Login
             li.nav-item
-              a.nav-link(href="/login") Log In
-            li.nav-item
-              a.nav-link(href="/logout") Logout
-
+              a.nav-link(href="/register") Register
 
     // About Section
     .container.my-5

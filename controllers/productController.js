@@ -46,7 +46,17 @@ exports.createProduct = async (req, res) => {
 exports.getMarket = async (req, res) => {
   try {
     // 1. Fetch all products and populate seller details
-    const products = await Product.find().populate("seller").lean();
+    let products = await Product.find().populate("seller").lean();
+
+    // If user is logged in, filter products by their region
+    if (req.session.userId) {
+      const user = await require("../models/User").findById(req.session.userId);
+      if (user && user.region) {
+        products = products.filter(
+          (p) => p.seller && p.seller.region === user.region,
+        );
+      }
+    }
 
     res.render("market", {
       products: products || [],

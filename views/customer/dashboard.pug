@@ -4,230 +4,177 @@ block head
   title Customer Dashboard
   link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
   style.
-    body {
-      background: #f8f9fa;
-    }
+    body { background: #f8f9fa; }
+
     .navbar-light .navbar-nav .nav-link:hover {
       background-color: #28a745;
       color: #fff !important;
       border-radius: 6px;
     }
-    .navbar-light .navbar-nav .nav-link.active {
-      background-color: #28a745;
-      color: #fff !important;
-      border-radius: 6px;
-    }
+
     .list-group-item.active {
       background-color: #28a745;
       border-color: #28a745;
       color: #fff;
     }
+
     .list-group-item:hover {
       background-color: #e9ecef;
       color: #28a745;
     }
+
     .card {
       border: none;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
+
     .card-header {
       background: linear-gradient(135deg, #28a745, #20c997);
       color: #fff;
       border-radius: 12px 12px 0 0 !important;
-      border: none;
     }
-    .table {
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .badge.bg-warning {
-      background-color: #ffc107 !important;
-      color: #000;
-    }
-    .badge.bg-success {
-      background-color: #28a745 !important;
-    }
-    .badge.bg-danger {
-      background-color: #dc3545 !important;
-    }
-    .badge.bg-info {
-      background-color: #17a2b8 !important;
-    }
-    .btn-outline-primary {
-      border-color: #28a745;
-      color: #28a745;
-    }
-    .btn-outline-primary:hover {
-      background-color: #28a745;
-      border-color: #28a745;
-    }
+
+    .badge.bg-warning { background-color: #ffc107 !important; color: #000; }
+    .badge.bg-success { background-color: #28a745 !important; }
+    .badge.bg-danger { background-color: #dc3545 !important; }
+    .badge.bg-info { background-color: #17a2b8 !important; }
 
 block content
   .container-fluid
-    // Navbar
+
+    // NAVBAR
     nav.navbar.navbar-expand-lg.navbar-light.bg-light.shadow-sm
       .container-fluid
-        a.navbar-brand.fw-bold(href="/", style="color: #28a745;") Farm Connect
-        .navbar-nav.ms-auto
-          li.nav-item
-            a.nav-link(href="/products/market") Market
-          li.nav-item
-            a.nav-link(href="/customer/dashboard") Dashboard
-          li.nav-item
-            a.nav-link(href="/orders") My Orders
-          li.nav-item
-            a.nav-link(href="/profile") Profile
-          li.nav-item
-            a.nav-link(href="/logout") Logout
+        a.navbar-brand.fw-bold(href="/welcome") Farm Connect
+        button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
+          span.navbar-toggler-icon
+        #navbarNav.collapse.navbar-collapse.justify-content-end
+          ul.navbar-nav.me-3
+            li.nav-item: a.nav-link(href="/welcome") Home
+            li.nav-item: a.nav-link(href="/products/market") Market
+            li.nav-item: a.nav-link(href="/customer/dashboard") Dashboard
+          li.nav-item: a.nav-link(href="/logout") Logout
 
     .row.mt-4
-      // Sidebar
+
+      // SIDEBAR
       .col-md-3.mb-4
-        .card.shadow-sm
-          .card-header.bg-success.text-white
+        .card
+          .card-header
             h6.mb-0
               i.fas.fa-tachometer-alt.me-2
               | Dashboard Menu
           .list-group.list-group-flush
-            a.list-group-item.list-group-item-action(href="/products/market")
-              i.fas.fa-store.me-2
-              | Market
-            a.list-group-item.list-group-item-action.active(href="/customer/dashboard")
-              i.fas.fa-chart-line.me-2
-              | Dashboard
-            a.list-group-item.list-group-item-action(href="/orders")
-              i.fas.fa-list.me-2
-              | My Orders
-            a.list-group-item.list-group-item-action(href="/settings")
-              i.fas.fa-cog.me-2
-              | Settings
+            a.list-group-item(href="/products/market") Market
+            a.list-group-item.active(href="/customer/dashboard") Dashboard
+            a.list-group-item(href="/customer/dashboard") My Orders
+            a.list-group-item(href="/settings") Settings
 
-      // Main Content
+      // MAIN CONTENT
       .col-md-9
-        .mt-4.mt-md-0
-          h2.text-success.fw-bold Customer Dashboard
-          p.lead Welcome back! Here you can track all your orders.
+        h2.text-success.fw-bold Customer Dashboard
+        p.lead Welcome back! Track your orders here.
+
         .card.mt-4
-          .card-header.d-flex.justify-content-between.align-items-center
+          .card-header.d-flex.justify-content-between
             h5.mb-0 My Orders
-            small.text-light #{orders ? orders.length : 0} total orders
+            small #{orders ? orders.length : 0} total orders
+
           .card-body
             if orders && orders.length > 0
               .table-responsive
-                table.table.table-striped.table-hover
-                  thead.table-light
+                table.table.table-striped
+                  thead
                     tr
-                      th Product Name
-                      th Quantity
-                      th Farmer Name
-                      th Farmer Contact
+                      th Product
+                      th Qty
+                      th Farmer
+                      th Contact
                       th Status
                       th Date
                   tbody
                     each order in orders
+                      - var amount = order.product ? order.quantity * order.product.price : 0
                       tr
-                        td.fw-semibold= order.product.name
+                        td= order.product ? order.product.name : 'Product removed'
                         td= order.quantity
                         td= order.farmerId ? order.farmerId.name : 'Unknown'
                         td= order.farmerId ? order.farmerId.phone : 'N/A'
+
                         td
                           case order.status
                             when 'pending'
-                              span.badge.bg-warning
-                                i.fas.fa-clock.me-1
-                                | Pending
+                              span.badge.bg-warning Pending
+
                             when 'approved'
-                              - var amount = order.quantity * order.product.price
-                              span.badge.bg-success
-                                i.fas.fa-check.me-1
-                                | Approved
+                              span.badge.bg-success Approved
                               br
-                              // Added payment button for approved orders with MTN integration
-                              button.btn.btn-sm.btn-primary.mt-1(data-bs-toggle="modal" data-bs-target="#paymentModal" data-order-id=order._id data-amount=amount) Proceed to Payment
+                              button.btn.btn-sm.btn-warning.mt-1(
+                                data-bs-toggle="modal"
+                                data-bs-target="#paymentModal"
+                                data-order-id=order._id
+                                data-amount=amount
+                              )
+                                i.fas.fa-mobile-alt.me-1
+                                | Pay with MTN
+
                             when 'rejected'
-                              span.badge.bg-danger
-                                i.fas.fa-times.me-1
-                                | Rejected
+                              span.badge.bg-danger Rejected
+
                             when 'paid'
-                              span.badge.bg-primary
-                                i.fas.fa-credit-card.me-1
-                                | Paid
-                            // Added paid status for completed payments
+                              span.badge.bg-primary Paid
+
                             when 'delivered'
-                              span.badge.bg-info
-                                i.fas.fa-truck.me-1
-                                | Delivered
+                              span.badge.bg-info Delivered
+
                             default
                               span.badge.bg-secondary= order.status
-                        td= order.createdAt.toLocaleDateString()
+
+                        td= new Date(order.createdAt).toLocaleDateString()
+
             else
               .text-center.py-5
-                i.fas.fa-shopping-cart.fa-3x.text-muted.mb-3
                 h5.text-muted No orders yet
-                p.text-muted Start shopping in our market to see your orders here.
-                a.btn.btn-success(href="/products/market")
-                  i.fas.fa-store.me-2
-                  | Browse Market
+                a.btn.btn-success(href="/products/market") Browse Market
 
-  // Payment Modal for MTN API integration
+
+  // SINGLE PAYMENT MODAL
   #paymentModal.modal.fade(tabindex="-1")
     .modal-dialog
       .modal-content
-        .modal-header
-          h5.modal-title Payment for Order
+
+        .modal-header(style="background: linear-gradient(135deg, #ffc107, #ffeb3b); color:#000;")
+          h5.modal-title Payment
           button.btn-close(type="button" data-bs-dismiss="modal")
+
         .modal-body
-          p You are about to pay for the approved order.
-          // MTN Payment Integration
-          form#paymentForm(action="/orders/payment/process" method="POST")
+          form(action="/orders/payment/process" method="POST")
             input(type="hidden" name="orderId" id="modalOrderId")
+
             .mb-3
-              label.form-label(for="phone") MTN Phone Number
-              input#phone.form-control(type="tel" name="phone" placeholder="e.g. 256700000000" value=user.phone required)
+              label Phone Number
+              input#phone.form-control(type="tel" name="phone" value=user.phone required)
+
             .mb-3
-              label.form-label(for="amount") Amount
+              label Amount
               input#amount.form-control(type="number" name="amount" readonly)
-            button.btn.btn-success(type="submit") Pay with MTN
 
+            button.btn.btn-warning.w-100(type="submit")
+              i.fas.fa-mobile-alt.me-1
+              | Pay with MTN
+
+
+  // SINGLE SCRIPT
   script.
-    // Set order ID and amount in modal
-    const paymentModal = document.getElementById('paymentModal');
-    paymentModal.addEventListener('show.bs.modal', function (event) {
+    const modal = document.getElementById('paymentModal');
+
+    modal.addEventListener('show.bs.modal', function (event) {
       const button = event.relatedTarget;
+
       const orderId = button.getAttribute('data-order-id');
       const amount = button.getAttribute('data-amount');
-      document.getElementById('modalOrderId').value = orderId;
-      document.getElementById('amount').value = amount;
-    });
 
-  // Payment Modal for MTN API integration
-  #paymentModal.modal.fade(tabindex="-1")
-    .modal-dialog
-      .modal-content
-        .modal-header(style="background: linear-gradient(135deg, #ffc107, #ffeb3b); color: #000;")
-          h5.modal-title Payment for Order
-          button.btn-close(type="button" data-bs-dismiss="modal")
-        .modal-body
-          p You are about to pay for the approved order.
-          // MTN Payment Integration Placeholder
-          form#paymentForm(action="/payment/process" method="POST")
-            input(type="hidden" name="orderId" id="modalOrderId")
-            .mb-3
-              label.form-label(for="phone") MTN Phone Number
-              input#phone.form-control(type="tel" name="phone" placeholder="e.g. 256700000000" required)
-            .mb-3
-              label.form-label(for="amount") Amount
-              input#amount.form-control(type="number" name="amount" min="0" step="0.01" required)
-            button.btn.btn-warning(type="submit") Pay with MTN
-
-  script.
-    // Set order ID and amount in modal
-    const paymentModal = document.getElementById('paymentModal');
-    paymentModal.addEventListener('show.bs.modal', function (event) {
-      const button = event.relatedTarget;
-      const orderId = button.getAttribute('data-order-id');
-      const amount = button.getAttribute('data-amount');
       document.getElementById('modalOrderId').value = orderId;
       document.getElementById('amount').value = amount;
     });

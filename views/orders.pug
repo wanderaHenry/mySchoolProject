@@ -12,21 +12,29 @@ html(lang="en")
     // Navbar
     nav.navbar.navbar-expand-lg.navbar-light.bg-light.shadow-sm
       .container
-        a.navbar-brand.fw-bold(href="/") Farm Connect
+        a.navbar-brand.fw-bold(href="/welcome") Farm Connect
         button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
           span.navbar-toggler-icon
         #navbarNav.collapse.navbar-collapse.justify-content-end
           ul.navbar-nav.me-3
             li.nav-item
-              a.nav-link(href="/dashboard") Dashboard
+              a.nav-link(href="/welcome") Home
             li.nav-item
               a.nav-link(href="/products/market") Market
-            li.nav-item
-              a.nav-link(href="/products") My Products
+            if user && user.role === "farmer"
+              li.nav-item
+                a.nav-link(href="/dashboard") Dashboard
+              li.nav-item
+                a.nav-link(href="/products") My Products
+              li.nav-item
+                a.nav-link(href="/orders") Orders
+            else if user && user.role === "customer"
+              li.nav-item
+                a.nav-link(href="/customer/dashboard") Dashboard
+              li.nav-item
+                a.nav-link(href="/orders") My Orders
             li.nav-item
               a.nav-link(href="/settings") Settings
-            li.nav-item
-              a.nav-link(href="/messages") Messages
             li.nav-item
               a.nav-link(href="/logout") Logout
 
@@ -47,8 +55,8 @@ html(lang="en")
           tbody
             each order in orders
               tr
-                td #{order.product.name}
-                td #{order.customerId.name}
+                td #{order.product ? order.product.name : 'Product Deleted'}
+                td #{order.customerId ? order.customerId.name : 'Customer Deleted'}
                 td #{order.status}
                 td
                   form(action="/orders/update", method="POST", class="d-flex align-items-center")

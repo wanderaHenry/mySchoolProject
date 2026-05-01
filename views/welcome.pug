@@ -10,35 +10,41 @@ html(lang="en")
 
   body(data-page="welcome")
     // Navbar
-    nav.navbar.navbar-expand-lg.navbar-light.bg-white.shadow-sm.px-4
-      a.navbar-brand(href="#")
-        i.bi.bi-list(style="font-size: 1.5rem;")
-      .collapse.navbar-collapse
-        ul.navbar-nav.ms-auto
-          li.nav-item
-            a.nav-link.active(href="/") Home
-          li.nav-item
-            a.nav-link(href="/about") About
-          li.nav-item
-            a.nav-link(href="/contact") Contact Us
-          li.nav-item
-            a.nav-link(href="/logout") Logout
-  
-        form.d-flex.ms-3
-          input.form-control.form-control-sm.me-2(type="search", placeholder="Search")
-          button.btn.btn-outline-secondary.btn-sm(type="submit")
-            i.bi.bi-search
-        img.rounded-circle.ms-3(src="https://via.placeholder.com/40", alt="Profile")
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light.shadow-sm
+      .container
+        a.navbar-brand.fw-bold(href="/") Farm Connect
+        button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
+          span.navbar-toggler-icon
+        #navbarNav.collapse.navbar-collapse.justify-content-end
+          ul.navbar-nav.me-3
+            li.nav-item
+              a.nav-link(href="/") Home
+            li.nav-item
+              a.nav-link(href="/products/market") Market
+            li.nav-item
+              a.nav-link(href="/logout") Logout
 
     // Welcome Text
     .container.text-center
       h3.welcome-text Welcome To Farm Connect, #{user.name}!
 
+      // Region Change Form
+      .mt-4.mb-4
+        h5 Change Your Region
+        form(action="/change-region" method="POST")
+          .mb-3
+            select.form-select#regRegion(name="region" required)
+              option(selected disabled value="") Select region
+              option(value="Eastern" selected=user.region === "Eastern") Eastern
+              option(value="Central" selected=user.region === "Central") Central
+              option(value="Northern" selected=user.region === "Northern") Northern
+              option(value="Western" selected=user.region === "Western") Western
+          button.btn.btn-secondary(type="submit") Update Region
+
       // Buttons
       .mt-4
         button#dashboardBtn.btn.btn-custom(onclick="window.location.href='/dashboard'") Dashboard
-        button#regionBtn.btn.btn-custom(onclick="window.location.href='/settings'") Change Region
-        button#browseBtn.btn.btn-custom(onclick="window.location.href='/products/market'") Browse Products on Market
+        button#regionBtn.btn.btn-custom(onclick="window.location.href='/products/market'") Browse Products on Market
 
 
 

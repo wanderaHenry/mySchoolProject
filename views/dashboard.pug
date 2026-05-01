@@ -8,6 +8,25 @@ html(lang="en")
     link(rel="stylesheet", href="/style.css")
 
   body(data-page="dashboard")
+    // Navbar
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light.shadow-sm
+      .container-fluid
+        a.navbar-brand.fw-bold(href="/dashboard") Farm Connect
+        button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
+          span.navbar-toggler-icon
+        #navbarNav.collapse.navbar-collapse.justify-content-end
+          ul.navbar-nav.me-3
+            li.nav-item
+              a.nav-link(href="/dashboard") Dashboard
+            li.nav-item
+              a.nav-link(href="/products") My Products
+            li.nav-item
+              a.nav-link(href="/orders") Orders
+            li.nav-item
+              a.nav-link(href="/products/market") Market
+            li.nav-item
+              a.nav-link(href="/logout") Logout
+
     .container-fluid
       .row
         // Sidebar
@@ -24,6 +43,12 @@ html(lang="en")
         // Main Content
         .col-md-9.col-lg-10.dashboard-content
           h4.text-center Hello #{user.name}, this is your dashboard!
+
+          // Dashboard action buttons
+          .d-flex.justify-content-center.align-items-center.flex-wrap.gap-2.my-4
+            button#dashboardBtn.btn.btn-custom(type="button" onclick="window.location.href='/dashboard'") Dashboard
+            button#regionBtn.btn.btn-custom(type="button" onclick="window.location.href='/settings'") Change Region
+            button#browseBtn.btn.btn-custom(type="button" onclick="window.location.href='/products/market'") Browse Products on Market
 
           // Stats
           .row.mb-4
@@ -77,7 +102,7 @@ html(lang="en")
           form#productForm.bg-white.p-4.shadow-sm.rounded(action="/products/create" method="POST" enctype="multipart/form-data")
             .mb-3
               label.form-label(for="productName") Product Name
-              input#productName.form-control(type="text", name="name", placeholder="e.g. Organic Tomatoes", required)
+              input#productNam0oe.form-control(type="text", name="name", placeholder="e.g. Organic Tomatoes", required)
             .mb-3
               label.form-label(for="productDesc") Description
               textarea#productDesc.form-control(name="description", rows="3", required)
