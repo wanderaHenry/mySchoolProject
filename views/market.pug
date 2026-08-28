@@ -36,7 +36,7 @@ html(lang="en")
               a.nav-link(href="/welcome") Home
             li.nav-item
               a.nav-link(href="/products/market") Market
-            if user.role === "farmer"
+            if user.role === "farmer" || user.role === "aggregator"
               li.nav-item
                 a.nav-link(href="/dashboard") Dashboard
               li.nav-item
@@ -56,6 +56,12 @@ html(lang="en")
     .container.text-center.mt-4
       h4 Welcome To Farm-Connect Market, #{user.name}
 
+    .container.mt-3
+      .d-flex.justify-content-center.flex-wrap.gap-2
+        button.btn.btn-outline-secondary.filter-btn.active(type="button" data-filter="all") All Products
+        button.btn.btn-outline-success.filter-btn(type="button" data-filter="farmer") Direct from Farmers
+        button.btn.btn-outline-primary.filter-btn(type="button" data-filter="aggregator") Aggregators Only
+
     // Product Grid
     .container.mt-4
       if products.length === 0
@@ -63,7 +69,7 @@ html(lang="en")
       else
         .row.row-cols-1.row-cols-md-3.g-4.justify-content-center
           each product in products
-            .col
+              .col.product-card(data-seller-role=product.seller ? product.seller.role : "unknown")
               .card.h-100
                 if product.image
                   img.card-img-top(src=product.image, alt=product.name)
@@ -72,18 +78,35 @@ html(lang="en")
                 .card-body
                   h5.card-title #{product.name}
                   p.card-text #{product.description}
-                  p.text-success $#{product.price.toLocaleString()}
-                  // Added farmer name, contact (phone only), and quantity display as requested
-                  p.text-muted Farmer: #{product.seller ? product.seller.name : "Unknown"}
+                  p.text-success UGX #{product.price.toLocaleString()}
+                  if product.quantity <= 0
+                    span.badge.bg-dark.mb-2 Taken
+                  if product.seller && product.seller.role === "farmer"
+                    span.badge.bg-success.mb-2 Direct from Farmer
+                  else if product.seller && product.seller.role === "aggregator"
+                    span.badge.bg-primary.mb-2 Aggregator / Cooling Center
+                  else
+                    span.badge.bg-secondary.mb-2 Unknown seller
+                  p.text-muted Seller: #{product.seller ? (product.seller.businessName || product.seller.name) : "Unknown"}
+                  p.text-muted Region: #{product.seller ? product.seller.region : "Unknown"}
+                  if user.role === "customer" && product.seller && product.seller.region
+                    if product.seller.region !== user.region
+                      p.alert.alert-warning.py-2.mb-2
+                        | This seller is in a different region. A delivery fee of UGX #{product.deliveryFee.toLocaleString()} will apply.
+                    else
+                      p.text-muted.mb-2 Delivery fee: UGX #{product.deliveryFee.toLocaleString()} (same region)
                   p.text-muted Contact: #{product.seller ? product.seller.phone : "N/A"}
                   p.text-muted Quantity Available: #{product.quantity} kg
-                  // Request form
-                  form(action="/orders/create", method="POST")
-                    input(type="hidden", name="productId", value=product._id)
-                    .input-group.mb-2
-                      input.form-control(type="number", name="quantity", placeholder="Quantity", min="1", max=product.quantity, required)
-                    // Changed button text to "Request Product" for clarity
-                    button.btn.btn-primary.btn-sm(type="submit") Request Product
+                  if product.quantity <= 0
+                    button.btn.btn-dark.btn-sm(type="button" disabled) Taken
+                  else if user.role === "farmer" || user.role === "aggregator"
+                    button.btn.btn-secondary.btn-sm(type="button" disabled) Seller accounts cannot place orders
+                  else
+                    form(action="/orders/create", method="POST")
+                      input(type="hidden", name="productId", value=product._id)
+                      .input-group.mb-2
+                        input.form-control(type="number", name="quantity", placeholder="Quantity", min="1", max=product.quantity, required)
+                      button.btn.btn-primary.btn-sm(type="submit") Request Product
 
     // Footer
     .footer.bg-light.text-center.py-3.mt-5
@@ -91,3 +114,15 @@ html(lang="en")
       p Contact: henrywandera138@gmail.com | +256 767 127 641
 
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js")
+    script.
+      document.querySelectorAll('.filter-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+          const filter = button.dataset.filter;
+          document.querySelectorAll('.filter-btn').forEach(function (item) {
+            item.classList.toggle('active', item === button);
+          });
+          document.querySelectorAll('.product-card').forEach(function (card) {
+            card.classList.toggle('d-none', filter !== 'all' && card.dataset.sellerRole !== filter);
+          });
+        });
+      });

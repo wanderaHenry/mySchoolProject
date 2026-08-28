@@ -274,6 +274,10 @@ body {
   background: #cce5ff;
   color: #004085;
 }
+.bg-purple {
+  background-color: #6f42c1 !important;
+  color: #fff;
+}
 
 /* Override Bootstrap Success Button */
 .btn-success {

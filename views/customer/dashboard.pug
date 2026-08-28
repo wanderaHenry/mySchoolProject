@@ -35,7 +35,7 @@ block head
       border-radius: 12px 12px 0 0 !important;
     }
 
-    .badge.bg-warning { background-color: #ffc107 !important; color: #000; }
+    .badge.bg-warning { background-col.lor: #ffc107 !important; color: #000; }
     .badge.bg-success { background-color: #28a745 !important; }
     .badge.bg-danger { background-color: #dc3545 !important; }
     .badge.bg-info { background-color: #17a2b8 !important; }
@@ -91,16 +91,24 @@ block content
                       th Qty
                       th Farmer
                       th Contact
+                      th Subtotal
+                      th Delivery
+                      th Grand Total
                       th Status
                       th Date
                   tbody
                     each order in orders
                       - var amount = order.product ? order.quantity * order.product.price : 0
+                      - var deliveryFee = order.deliveryFee || 0
+                      - var totalAmount = order.totalAmount || amount + deliveryFee
                       tr
                         td= order.product ? order.product.name : 'Product removed'
                         td= order.quantity
                         td= order.farmerId ? order.farmerId.name : 'Unknown'
                         td= order.farmerId ? order.farmerId.phone : 'N/A'
+                        td UGX #{amount.toLocaleString()}
+                        td UGX #{deliveryFee.toLocaleString()}
+                        td.fw-bold UGX #{totalAmount.toLocaleString()}
 
                         td
                           case order.status
@@ -114,7 +122,7 @@ block content
                                 data-bs-toggle="modal"
                                 data-bs-target="#paymentModal"
                                 data-order-id=order._id
-                                data-amount=amount
+                                data-amount=totalAmount
                               )
                                 i.fas.fa-mobile-alt.me-1
                                 | Pay with MTN
@@ -124,6 +132,9 @@ block content
 
                             when 'paid'
                               span.badge.bg-primary Paid
+
+                            when 'shipped'
+                              span.badge.bg-purple On the way
 
                             when 'delivered'
                               span.badge.bg-info Delivered
@@ -157,7 +168,7 @@ block content
               input#phone.form-control(type="tel" name="phone" value=user.phone required)
 
             .mb-3
-              label Amount
+              label Amount (product subtotal + delivery fee)
               input#amount.form-control(type="number" name="amount" readonly)
 
             button.btn.btn-warning.w-100(type="submit")

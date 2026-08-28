@@ -3,7 +3,7 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Farmer Dashboard
+    title= user.role === 'aggregator' ? 'Aggregator Dashboard' : 'Farmer Dashboard'
     link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet")
     link(rel="stylesheet", href="/style.css")
 
@@ -33,7 +33,7 @@ html(lang="en")
         .col-md-3.col-lg-2.sidebar
           h5.mb-4 #{user.name}
             br
-            small.text-muted Farmer
+            small.text-muted= user.role === 'aggregator' ? 'Aggregator / Cooling Center' : 'Farmer'
           a.active(href="/dashboard") Dashboard
           a(href="/products") Products
           a(href="/orders") Orders
@@ -42,7 +42,7 @@ html(lang="en")
 
         // Main Content
         .col-md-9.col-lg-10.dashboard-content
-          h4.text-center Hello #{user.name}, this is your dashboard!
+          h4.text-center Hello #{user.name}, this is your #{user.role === 'aggregator' ? 'aggregator dashboard' : 'farmer dashboard'}!
 
           // Dashboard action buttons
           .d-flex.justify-content-center.align-items-center.flex-wrap.gap-2.my-4
@@ -50,12 +50,17 @@ html(lang="en")
             button#regionBtn.btn.btn-custom(type="button" onclick="window.location.href='/settings'") Change Region
             button#browseBtn.btn.btn-custom(type="button" onclick="window.location.href='/products/market'") Browse Products on Market
 
+          if errorMessage
+            .alert.alert-danger #{errorMessage}
+          if warningMessage
+            .alert.alert-warning #{warningMessage}
+
           // Stats
           .row.mb-4
             .col-md-4
               .card.p-3.shadow-sm
                 h6 Total Sales
-                h4 $#{totalSales}
+                h4 UGX #{Number(totalSales || 0).toLocaleString()}
             .col-md-4
               .card.p-3.shadow-sm
                 h6 Number of Orders
@@ -63,7 +68,7 @@ html(lang="en")
             .col-md-4
               .card.p-3.shadow-sm
                 h6 Average Order Value
-                h4 $#{avgOrderValue}
+                h4 UGX #{Number(avgOrderValue || 0).toLocaleString()}
 
           // Upcoming Orders
           h5.mb-3 Upcoming Orders
@@ -78,6 +83,8 @@ html(lang="en")
                   th Total
               tbody
                 each order, i in orders
+                  - var subtotal = order.quantity * (order.product && order.product.price ? order.product.price : 0)
+                  - var deliveryFee = order.deliveryFee || 0
                   tr
                     td #{order._id}
                     td #{order.customerId ? order.customerId.name : 'Unknown'}
@@ -89,11 +96,13 @@ html(lang="en")
                         span.status-badge.status-confirmed Approved
                       else if order.status === 'paid'
                         span.status-badge.status-shipped Paid
+                      else if order.status === 'shipped'
+                        span.status-badge.status-shipped Shipped
                       else if order.status === 'delivered'
                         span.status-badge.status-delivered Delivered
                       else
                         span.status-badge.status-declined #{order.status}
-                    td $#{(order.quantity * (order.product && order.product.price ? order.product.price : 0)).toFixed(2)}
+                    td UGX #{(order.totalAmount || subtotal + deliveryFee).toLocaleString()}
           else
             p.text-muted No upcoming orders.
 
@@ -102,16 +111,16 @@ html(lang="en")
           form#productForm.bg-white.p-4.shadow-sm.rounded(action="/products/create" method="POST" enctype="multipart/form-data")
             .mb-3
               label.form-label(for="productName") Product Name
-              input#productNam0oe.form-control(type="text", name="name", placeholder="e.g. Organic Tomatoes", required)
+              input#productName.form-control(type="text", name="name", placeholder="e.g. Organic Tomatoes", required)
             .mb-3
               label.form-label(for="productDesc") Description
               textarea#productDesc.form-control(name="description", rows="3", required)
             .mb-3
-              label.form-label(for="productPrice") Price
-              input#productPrice.form-control(type="number", step="0.01", name="price", placeholder="$0.00", required)
+              label.form-label(for="productPrice") Price (UGX)
+              input#productPrice.form-control(type="number", step="1", min="0", name="price", placeholder="UGX 0", required)
             .mb-3
               label.form-label(for="productQuantity") Quantity Available
-              input#productQuantity.form-control(type="number", name="quantity", placeholder="e.g. 100 kg", required)
+              input#productQuantity.form-control(type="number", min="0", name="quantity", placeholder="e.g. 100 kg", required)
             .mb-3
               label.form-label(for="productImage") Upload Product Image
               input#productImage.form-control(type="file", name="image", required)

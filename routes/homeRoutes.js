@@ -50,7 +50,10 @@ router.get("/dashboard", requireAuth, async (req, res) => {
 
     if (!user) return res.redirect("/login");
 
-    if (user.role !== "farmer") return res.redirect("/customer/dashboard");
+    if (user.role === "customer") return res.redirect("/customer/dashboard");
+    if (!["farmer", "aggregator"].includes(user.role)) {
+      return res.status(403).send("Access denied");
+    }
 
     // Fetch this farmer's products
     const products = await Product.find({ seller: user._id }).lean();
@@ -74,6 +77,12 @@ router.get("/dashboard", requireAuth, async (req, res) => {
     const avgOrderValue =
       numberOfOrders > 0 ? (totalSales / numberOfOrders).toFixed(2) : 0;
 
+    const errorMessage = req.session.productError;
+    const warningMessage = req.session.productWarning;
+
+    delete req.session.productError;
+    delete req.session.productWarning;
+
     res.render("dashboard", {
       user,
       products,
@@ -81,6 +90,8 @@ router.get("/dashboard", requireAuth, async (req, res) => {
       totalSales,
       numberOfOrders,
       avgOrderValue,
+      errorMessage,
+      warningMessage,
     });
   } catch (err) {
     console.error(err);

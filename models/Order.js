@@ -19,9 +19,13 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     quantity: { type: Number, required: true },
+    deliveryFee: { type: Number, required: true },
+    totalAmount: { type: Number },
+    customerRegion: { type: String },
+    farmerRegion: { type: String },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected", "paid", "delivered"], // Added "paid" status for payment completion
+      enum: ["pending", "approved", "rejected", "paid", "shipped", "delivered"],
       default: "pending",
     },
   },

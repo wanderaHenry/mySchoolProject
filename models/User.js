@@ -15,9 +15,11 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     role: {
       type: String,
-      enum: ["customer", "farmer"],
+      enum: ["customer", "farmer", "aggregator"],
       required: true,
     },
+    businessName: { type: String, trim: true },
+    hasCoolingFacility: { type: Boolean, default: false },
     profilePic: {
       type: String,
       default: "/images/1770368612958-home.avif", // fallback to existing image until upload

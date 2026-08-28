@@ -18,8 +18,17 @@ router.get("/register", (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
-    const { name, region, email, phone, password, confirmPassword, role } =
-      req.body;
+    const {
+      name,
+      region,
+      email,
+      phone,
+      password,
+      confirmPassword,
+      role,
+      businessName,
+      hasCoolingFacility,
+    } = req.body;
 
     if (password !== confirmPassword) {
       return res.status(400).send("Passwords do not match");
@@ -29,16 +38,32 @@ router.post("/register", async (req, res) => {
       return res.status(400).send("Phone number is required");
     }
 
-    const user = new User({ name, region, email, phone, password, role });
+    const user = new User({
+      name,
+      region,
+      email,
+      phone,
+      password,
+      role,
+      businessName: role === "aggregator" ? businessName : undefined,
+      hasCoolingFacility:
+        role === "aggregator" && hasCoolingFacility === "true",
+    });
     await user.save();
 
     // Create corresponding profile
     if (role === "customer") {
       const Customer = require("../models/Customer");
       await new Customer({ userId: user._id }).save();
-    } else if (role === "farmer") {
+    } else if (role === "farmer" || role === "aggregator") {
       const Farmer = require("../models/Farmer");
-      await new Farmer({ userId: user._id, farmName: name + "'s Farm" }).save(); // Default farm name
+      await new Farmer({
+        userId: user._id,
+        farmName:
+          role === "aggregator"
+            ? businessName || name + " Cooling Center"
+            : name + "'s Farm",
+      }).save();
     }
 
     res.redirect("/login");
@@ -67,8 +92,8 @@ router.post("/login", async (req, res) => {
     // Redirect based on role
     if (user.role === "customer") {
       res.redirect("/customer/dashboard");
-    } else if (user.role === "farmer") {
-      res.redirect("/welcome");
+    } else if (user.role === "farmer" || user.role === "aggregator") {
+      res.redirect("/dashboard");
     } else {
       res.redirect("/welcome"); // Default
     }

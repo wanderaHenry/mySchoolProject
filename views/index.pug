@@ -27,7 +27,7 @@ html(lang="en")
                 a.nav-link(href="/welcome") Home
               li.nav-item
                 a.nav-link(href="/products/market") Market
-              if user.role === "farmer"
+              if user.role === "farmer" || user.role === "aggregator"
                 li.nav-item
                   a.nav-link(href="/dashboard") Dashboard
                 li.nav-item

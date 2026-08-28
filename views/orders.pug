@@ -21,7 +21,7 @@ html(lang="en")
               a.nav-link(href="/welcome") Home
             li.nav-item
               a.nav-link(href="/products/market") Market
-            if user && user.role === "farmer"
+            if user && (user.role === "farmer" || user.role === "aggregator")
               li.nav-item
                 a.nav-link(href="/dashboard") Dashboard
               li.nav-item
@@ -50,23 +50,58 @@ html(lang="en")
             tr
               th Product
               th Buyer
+              th Subtotal
+              th Delivery
+              th Total
               th Status
               th Action
           tbody
             each order in orders
+              - var subtotal = order.product ? order.quantity * order.product.price : 0
+              - var deliveryFee = order.deliveryFee || 0
+              - var totalAmount = order.totalAmount || subtotal + deliveryFee
               tr
                 td #{order.product ? order.product.name : 'Product Deleted'}
                 td #{order.customerId ? order.customerId.name : 'Customer Deleted'}
-                td #{order.status}
+                td UGX #{subtotal.toLocaleString()}
+                td UGX #{deliveryFee.toLocaleString()}
+                td.fw-bold UGX #{totalAmount.toLocaleString()}
                 td
-                  form(action="/orders/update", method="POST", class="d-flex align-items-center")
-                    input(type="hidden", name="orderId", value=order._id)
-                    select.form-select.form-select-sm(name="status")
-                      option(value="pending", selected=order.status==="pending") Pending
-                      option(value="approved", selected=order.status==="approved") Approved
-                      option(value="rejected", selected=order.status==="rejected") Rejected
-                      option(value="delivered", selected=order.status==="delivered") Delivered
-                    button.btn.btn-success.btn-sm.ms-2(type="submit") Update
+                  case order.status
+                    when 'pending'
+                      span.badge.bg-warning.text-dark Pending
+                    when 'approved'
+                      span.badge.bg-success Approved
+                    when 'rejected'
+                      span.badge.bg-danger Rejected
+                    when 'paid'
+                      span.badge.bg-primary Paid
+                    when 'shipped'
+                      span.badge.bg-purple Shipped
+                    when 'delivered'
+                      span.badge.bg-info Delivered
+                    default
+                      span.badge.bg-secondary= order.status
+                td
+                  if order.status === 'pending'
+                    form(action="/orders/update", method="POST", class="d-flex align-items-center")
+                      input(type="hidden", name="orderId", value=order._id)
+                      select.form-select.form-select-sm(name="status")
+                        option(value="approved") Approve
+                        option(value="rejected") Reject
+                      button.btn.btn-success.btn-sm.ms-2(type="submit") Update
+                  else if order.status === 'paid'
+                    form(action="/orders/update", method="POST")
+                      input(type="hidden", name="orderId", value=order._id)
+                      input(type="hidden", name="status", value="shipped")
+                      button.btn.btn-primary.btn-sm(type="submit") Mark as Shipped
+                  else if order.status === 'shipped'
+                    form(action="/orders/update", method="POST")
+                      input(type="hidden", name="orderId", value=order._id)
+                      input(type="hidden", name="status", value="delivered")
+                      button.btn.btn-info.btn-sm(type="submit") Mark as Delivered
+                  else
+                    span.text-muted No action
 
     // Scripts
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")

@@ -1,7 +1,17 @@
 // controllers/orderController.js
 const Order = require("../models/Order");
 const Product = require("../models/Product");
+const User = require("../models/User");
+const { calculateDeliveryFee } = require("../utils/deliveryHelper");
 const axios = require("axios");
+
+const sellerRoles = ["farmer", "aggregator"];
+
+const allowedStatusTransitions = {
+  pending: ["approved", "rejected"],
+  paid: ["shipped"],
+  shipped: ["delivered"],
+};
 
 // Create order (buyer requests product)
 exports.createOrder = async (req, res) => {
@@ -10,9 +20,13 @@ exports.createOrder = async (req, res) => {
       return res.redirect("/login");
     }
 
-    const user = await require("../models/User").findById(req.session.userId);
+    const user = await User.findById(req.session.userId);
     if (!user) {
       return res.redirect("/login");
+    }
+
+    if (user.role !== "customer") {
+      return res.status(403).send("Only customers can place orders");
     }
 
     const { productId, quantity } = req.body;
@@ -23,22 +37,45 @@ exports.createOrder = async (req, res) => {
       return res.status(404).send("Product not found");
     }
 
-    if (quantity > product.quantity) {
+    const orderQuantity = Number(quantity);
+    if (!Number.isInteger(orderQuantity) || orderQuantity < 1) {
+      return res.status(400).send("Quantity must be a positive whole number");
+    }
+
+    if (orderQuantity > product.quantity) {
       return res.status(400).send("Requested quantity exceeds available stock");
     }
+
+    if (product.quantity <= 0) {
+      return res.status(400).send("This product has already been taken");
+    }
+
+    if (!product.seller || !product.seller.region) {
+      return res.status(400).send("Farmer region is not available");
+    }
+
+    const deliveryFee = calculateDeliveryFee(
+      user.region,
+      product.seller.region,
+    );
+    const productSubtotal = orderQuantity * product.price;
 
     const order = new Order({
       customerId: user._id,
       farmerId: product.seller._id,
       product: product._id,
-      quantity: parseInt(quantity),
+      quantity: orderQuantity,
+      deliveryFee,
+      totalAmount: productSubtotal + deliveryFee,
+      customerRegion: user.region,
+      farmerRegion: product.seller.region,
       status: "pending",
     });
 
     await order.save();
 
     // Reduce product quantity
-    product.quantity -= parseInt(quantity);
+    product.quantity -= orderQuantity;
     await product.save();
 
     // Add order to customer's orders
@@ -62,8 +99,16 @@ exports.getOrders = async (req, res) => {
       return res.redirect("/login");
     }
 
-    const user = await require("../models/User").findById(req.session.userId);
-    if (!user || user.role !== "farmer") {
+    const user = await User.findById(req.session.userId);
+    if (!user) {
+      return res.redirect("/login");
+    }
+
+    if (user.role === "customer") {
+      return res.redirect("/customer/dashboard");
+    }
+
+    if (!sellerRoles.includes(user.role)) {
       return res.status(403).send("Access denied");
     }
 
@@ -88,14 +133,31 @@ exports.updateOrderStatus = async (req, res) => {
       return res.redirect("/login");
     }
 
-    const user = await require("../models/User").findById(req.session.userId);
-    if (!user || user.role !== "farmer") {
+    const user = await User.findById(req.session.userId);
+    if (!user || !sellerRoles.includes(user.role)) {
       return res.status(403).send("Access denied");
     }
 
     const order = await Order.findById(orderId);
     if (!order || order.farmerId.toString() !== user._id.toString()) {
       return res.status(403).send("Not authorized");
+    }
+
+    if (
+      !Object.prototype.hasOwnProperty.call(
+        allowedStatusTransitions,
+        order.status,
+      )
+    ) {
+      return res
+        .status(400)
+        .send(`Order cannot be updated from ${order.status}`);
+    }
+
+    if (!allowedStatusTransitions[order.status].includes(status)) {
+      return res
+        .status(400)
+        .send(`Invalid status transition from ${order.status} to ${status}`);
     }
 
     await Order.findByIdAndUpdate(orderId, { status });
@@ -136,6 +198,12 @@ exports.processPayment = async (req, res) => {
     if (order.status !== "approved") {
       return res.status(400).send("Order must be approved before payment");
     }
+
+    const productSubtotal = order.product
+      ? order.quantity * order.product.price
+      : 0;
+    const expectedAmount =
+      order.totalAmount || productSubtotal + (order.deliveryFee || 0);
 
     // Validate phone number format (should be 256XXXXXXXXX for Uganda)
     const phoneRegex = /^256\d{9}$/;
