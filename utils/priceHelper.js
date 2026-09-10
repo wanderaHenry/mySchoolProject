@@ -160,16 +160,27 @@ function validateNewPrice({
 
   const currentLowest = getCurrentLowestActivePrice(productName, products);
 
-  if (
-    !allowOwnPriceLower &&
-    currentLowest !== null &&
-    numericPrice < currentLowest
-  ) {
-    return {
-      allowed: false,
-      warning: false,
-      message: `This product already has an active listing at UGX ${currentLowest.toLocaleString()}. New listings must be at least UGX ${currentLowest.toLocaleString()} or slightly above it.`,
-    };
+  if (currentLowest !== null) {
+    const priceDifference = numericPrice - currentLowest;
+
+    if (!allowOwnPriceLower && numericPrice < currentLowest) {
+      return {
+        allowed: false,
+        warning: false,
+        message: `The first posted price for this product is UGX ${currentLowest.toLocaleString()}. New sellers must match that price or charge between UGX ${(currentLowest + 100).toLocaleString()} and UGX ${(currentLowest + 200).toLocaleString()} only.`,
+      };
+    }
+
+    if (
+      priceDifference > 0 &&
+      (priceDifference < 100 || priceDifference > 200)
+    ) {
+      return {
+        allowed: false,
+        warning: false,
+        message: `The price for this product must be equal to the first posted price of UGX ${currentLowest.toLocaleString()} or greater only by UGX 100 to 200.`,
+      };
+    }
   }
 
   if (

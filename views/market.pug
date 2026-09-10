@@ -10,6 +10,8 @@ html(lang="en")
     style.
       .card {
         transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
       }
       .card:hover {
         transform: translateY(-5px);
@@ -22,8 +24,30 @@ html(lang="en")
       .btn-primary:hover {
         background: linear-gradient(135deg, #0056b3, #004085);
       }
+      .product-card {
+        display: flex;
+      }
+      .product-card .card {
+        width: 100%;
+      }
+      .product-card .card-img-top {
+        width: 100%;
+        height: 210px;
+        object-fit: cover;
+      }
+      .product-card .card-body {
+        min-height: 340px;
+      }
+      .product-card .card-text {
+        min-height: 48px;
+      }
+      @media (max-width: 576px) {
+        .product-card .card-img-top {
+          height: 190px;
+        }
+      }
 
-  body(data-page="market")
+  body.market-page(data-page="market")
     // Navbar
     nav.navbar.navbar-expand-lg.navbar-light.bg-light.shadow-sm
       .container
@@ -69,24 +93,25 @@ html(lang="en")
       else
         .row.row-cols-1.row-cols-md-3.g-4.justify-content-center
           each product in products
-              .col.product-card(data-seller-role=product.seller ? product.seller.role : "unknown")
+            .col.product-card(data-seller-role=product.seller ? product.seller.role : "unknown")
               .card.h-100
                 if product.image
                   img.card-img-top(src=product.image, alt=product.name)
                 else
                   img.card-img-top(src="https://via.placeholder.com/120x100", alt=product.name)
-                .card-body
+                .card-body.d-flex.flex-column
                   h5.card-title #{product.name}
-                  p.card-text #{product.description}
-                  p.text-success UGX #{product.price.toLocaleString()}
-                  if product.quantity <= 0
-                    span.badge.bg-dark.mb-2 Taken
-                  if product.seller && product.seller.role === "farmer"
-                    span.badge.bg-success.mb-2 Direct from Farmer
-                  else if product.seller && product.seller.role === "aggregator"
-                    span.badge.bg-primary.mb-2 Aggregator / Cooling Center
-                  else
-                    span.badge.bg-secondary.mb-2 Unknown seller
+                  p.card-text.text-muted #{product.description}
+                  p.text-success.fw-bold.mb-2 UGX #{product.price.toLocaleString()} per kg
+                  .mb-2
+                    if product.quantity <= 0
+                      span.badge.bg-dark.me-1 Taken
+                    if product.seller && product.seller.role === "farmer"
+                      span.badge.bg-success Direct from Farmer
+                    else if product.seller && product.seller.role === "aggregator"
+                      span.badge.bg-primary Aggregator / Cooling Center
+                    else
+                      span.badge.bg-secondary Unknown seller
                   p.text-muted Seller: #{product.seller ? (product.seller.businessName || product.seller.name) : "Unknown"}
                   p.text-muted Region: #{product.seller ? product.seller.region : "Unknown"}
                   if user.role === "customer" && product.seller && product.seller.region
@@ -97,16 +122,17 @@ html(lang="en")
                       p.text-muted.mb-2 Delivery fee: UGX #{product.deliveryFee.toLocaleString()} (same region)
                   p.text-muted Contact: #{product.seller ? product.seller.phone : "N/A"}
                   p.text-muted Quantity Available: #{product.quantity} kg
-                  if product.quantity <= 0
-                    button.btn.btn-dark.btn-sm(type="button" disabled) Taken
-                  else if user.role === "farmer" || user.role === "aggregator"
-                    button.btn.btn-secondary.btn-sm(type="button" disabled) Seller accounts cannot place orders
-                  else
-                    form(action="/orders/create", method="POST")
-                      input(type="hidden", name="productId", value=product._id)
-                      .input-group.mb-2
-                        input.form-control(type="number", name="quantity", placeholder="Quantity", min="1", max=product.quantity, required)
-                      button.btn.btn-primary.btn-sm(type="submit") Request Product
+                  .mt-auto
+                    if product.quantity <= 0
+                      button.btn.btn-dark.btn-sm.w-100(type="button" disabled) Taken
+                    else if user.role === "farmer" || user.role === "aggregator"
+                      button.btn.btn-secondary.btn-sm.w-100(type="button" disabled) Seller accounts cannot place orders
+                    else
+                      form(action="/orders/create", method="POST")
+                        input(type="hidden", name="productId", value=product._id)
+                        .input-group.mb-2
+                          input.form-control(type="number", name="quantity", placeholder="Quantity", min="1", max=product.quantity, required)
+                        button.btn.btn-primary.btn-sm.w-100(type="submit") Request Product
 
     // Footer
     .footer.bg-light.text-center.py-3.mt-5

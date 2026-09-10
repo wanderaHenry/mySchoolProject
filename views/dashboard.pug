@@ -73,36 +73,37 @@ html(lang="en")
           // Upcoming Orders
           h5.mb-3 Upcoming Orders
           if orders.length > 0
-            table.table.table-bordered.bg-white.shadow-sm
-              thead
-                tr
-                  th Order ID
-                  th Customer
-                  th Date
-                  th Status
-                  th Total
-              tbody
-                each order, i in orders
-                  - var subtotal = order.quantity * (order.product && order.product.price ? order.product.price : 0)
-                  - var deliveryFee = order.deliveryFee || 0
+            .table-scroll
+              table.table.table-bordered.bg-white.shadow-sm
+                thead
                   tr
-                    td #{order._id}
-                    td #{order.customerId ? order.customerId.name : 'Unknown'}
-                    td #{order.createdAt.toDateString()}
-                    td
-                      if order.status === 'pending'
-                        span.status-badge.status-pending Pending
-                      else if order.status === 'approved'
-                        span.status-badge.status-confirmed Approved
-                      else if order.status === 'paid'
-                        span.status-badge.status-shipped Paid
-                      else if order.status === 'shipped'
-                        span.status-badge.status-shipped Shipped
-                      else if order.status === 'delivered'
-                        span.status-badge.status-delivered Delivered
-                      else
-                        span.status-badge.status-declined #{order.status}
-                    td UGX #{(order.totalAmount || subtotal + deliveryFee).toLocaleString()}
+                    th Order ID
+                    th Customer
+                    th Date
+                    th Status
+                    th Total
+                tbody
+                  each order, i in orders
+                    - var subtotal = order.quantity * (order.product && order.product.price ? order.product.price : 0)
+                    - var deliveryFee = order.deliveryFee || 0
+                    tr
+                      td #{order._id}
+                      td #{order.customerId ? order.customerId.name : 'Unknown'}
+                      td #{order.createdAt.toDateString()}
+                      td
+                        if order.status === 'pending'
+                          span.status-badge.status-pending Pending
+                        else if order.status === 'approved'
+                          span.status-badge.status-confirmed Approved
+                        else if order.status === 'paid'
+                          span.status-badge.status-shipped Paid
+                        else if order.status === 'shipped'
+                          span.status-badge.status-shipped Shipped
+                        else if order.status === 'delivered'
+                          span.status-badge.status-delivered Delivered
+                        else
+                          span.status-badge.status-declined #{order.status}
+                      td UGX #{(order.totalAmount || subtotal + deliveryFee).toLocaleString()}
           else
             p.text-muted No upcoming orders.
 

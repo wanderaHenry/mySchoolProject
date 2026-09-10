@@ -29,20 +29,42 @@ const allowed = validateNewPrice({
 assert.strictEqual(allowed.allowed, true);
 assert.strictEqual(allowed.warning, false);
 
+const allowedAtFirstPrice = validateNewPrice({
+  productName: "Tomato",
+  price: 2500,
+  products,
+});
+assert.strictEqual(allowedAtFirstPrice.allowed, true);
+assert.strictEqual(allowedAtFirstPrice.warning, false);
+
 const blocked = validateNewPrice({
   productName: "Tomato",
   price: 2400,
   products,
 });
 assert.strictEqual(blocked.allowed, false);
-assert.ok(blocked.message.includes("at least"));
+assert.ok(
+  blocked.message.includes("equal to") ||
+    blocked.message.includes("100") ||
+    blocked.message.includes("UGX 2,600"),
+);
 
-const warning = validateNewPrice({
+const tooFarAbove = validateNewPrice({
   productName: "Tomato",
   price: 3000,
   products,
 });
-assert.strictEqual(warning.allowed, true);
-assert.strictEqual(warning.warning, true);
+assert.strictEqual(tooFarAbove.allowed, false);
+assert.ok(
+  tooFarAbove.message.includes("100") || tooFarAbove.message.includes("200"),
+);
+
+const validPremium = validateNewPrice({
+  productName: "Tomato",
+  price: 2650,
+  products,
+});
+assert.strictEqual(validPremium.allowed, true);
+assert.strictEqual(validPremium.warning, false);
 
 console.log("priceHelper tests passed");

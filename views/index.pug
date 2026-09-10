@@ -3,7 +3,8 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title FarmConnect
+    meta(name="description", content="Farm Connect brings fresh, locally grown produce from Ugandan farmers directly to customers.")
+    title Farm Connect | Fresh Produce from Local Farmers
     link(rel="stylesheet", href="/style.css")
     link(
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
@@ -13,20 +14,23 @@ html(lang="en")
     )
     link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css")
 
-  body(data-page="home")
-    // Navbar
-    nav.navbar.navbar-expand-lg.navbar-light.bg-light.shadow-sm
+  body.home-page(data-page="home")
+    nav.navbar.navbar-expand-lg.fixed-top
       .container
-        a.navbar-brand.fw-bold(href="/") Farm Connect
-        button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
+        a.navbar-brand(href="/") Farm Connect
+        button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
           span.navbar-toggler-icon
-        #navbarNav.collapse.navbar-collapse.justify-content-end
-          ul.navbar-nav.me-3
+        #navbarNav.collapse.navbar-collapse
+          ul.navbar-nav.ms-auto.align-items-lg-center
             if user
               li.nav-item
                 a.nav-link(href="/welcome") Home
               li.nav-item
+                a.nav-link(href="/about") About
+              li.nav-item
                 a.nav-link(href="/products/market") Market
+              li.nav-item
+                a.nav-link(href="/contact") Contact
               if user.role === "farmer" || user.role === "aggregator"
                 li.nav-item
                   a.nav-link(href="/dashboard") Dashboard
@@ -39,48 +43,215 @@ html(lang="en")
                   a.nav-link(href="/customer/dashboard") Dashboard
                 li.nav-item
                   a.nav-link(href="/orders") My Orders
-              li.nav-item
-                a.nav-link(href="/logout") Logout
+              li.nav-item.ms-lg-2
+                a.btn.btn-outline-success.btn-sm.rounded-pill(href="/logout") Logout
             else
               li.nav-item
                 a.nav-link(href="/") Home
               li.nav-item
                 a.nav-link(href="/about") About
               li.nav-item
+                a.nav-link(href="/products/market") Market
+              li.nav-item
                 a.nav-link(href="/contact") Contact
               li.nav-item
                 a.nav-link(href="/login") Login
-              li.nav-item
-                a.nav-link(href="/register") Register
+              li.nav-item.ms-lg-2
+                a.btn.btn-success.rounded-pill(href="/register") Register
 
-    // Hero Section
-    .hero-section
+    header.hero-section
       .container
-        h1.display-3.fw-bold Welcome to Farm-connect!
-        p.lead A trusted place for fresh foods directly from local farmers across different parts of Uganda
-        a.btn.btn-primary.btn-lg.mt-3(href="#learn-more") Learn More
+        .row.align-items-center.g-5
+          .col-lg-6
+            .hero-copy
+              span.badge.rounded-pill.hero-badge Fresh from Ugandan farms
+              h1 Fresh Produce Direct from Ugandan Farmers
+              p.lead
+                | Discover vibrant vegetables, fruits, grains, and staples grown with care and delivered with trust.
+              .hero-actions
+                a.btn.btn-success.btn-lg.rounded-pill(href="/products/market") Browse Market
+                a.btn.btn-outline-light.btn-lg.rounded-pill(href="/register") Join as Farmer / Customer
+              .hero-stats.row.g-3
+                .col-4
+                  .stat-box
+                    strong 1,200+
+                    span Farmers
+                .col-4
+                  .stat-box
+                    strong 4.9/5
+                    span Customer rating
+                .col-4
+                  .stat-box
+                    strong 24/7
+                    span Fresh delivery
 
-    // Pre-Footer
-    .pre-footer.py-4
+          .col-lg-6
+            .hero-visual
+              .showcase-card
+                .showcase-header
+                  span.badge.rounded-pill.bg-white.text-success Fresh this week
+                  span.text-white-50 Today’s harvest
+                .showcase-body
+                  .showcase-item
+                    .item-icon
+                      i.bi.bi-basket2-fill
+                    .item-copy
+                      h4 Matooke
+                      p From Ntungamo · UGX 2,500
+                  .showcase-item
+                    .item-icon
+                      i.bi.bi-egg-fill
+                    .item-copy
+                      h4 Eggs
+                      p From Masaka · UGX 3,800
+                  .showcase-item
+                    .item-icon
+                      i.bi.bi-flower1
+                    .item-copy
+                      h4 Tomatoes
+                      p From Wakiso · UGX 2,200
+                .showcase-footer
+                  span Trustworthy sourcing
+                  a(href="/products/market") View all produce
+
+    main
+      section.features-section
+        .container
+          .section-heading.text-center
+            span.section-kicker Why choose us
+            h2 Built for better food, fair pricing, and trusted sourcing
+            p We connect local farmers with buyers who want fresh, quality produce without the middlemen.
+          .row.g-4
+            .col-md-6.col-lg-3
+              .feature-card
+                .feature-icon
+                  i.bi.bi-basket2-fill
+                h3 Fresh from the Farm
+                p Carefully harvested and delivered quickly so you get produce at its best quality.
+            .col-md-6.col-lg-3
+              .feature-card
+                .feature-icon
+                  i.bi.bi-cash-stack
+                h3 Fair Prices
+                p Transparent pricing that rewards farmers and keeps products affordable for local households.
+            .col-md-6.col-lg-3
+              .feature-card
+                .feature-icon
+                  i.bi.bi-people-fill
+                h3 Support Local Farmers
+                p Help build a stronger local food system while connecting with trusted agricultural sellers.
+            .col-md-6.col-lg-3
+              .feature-card
+                .feature-icon
+                  i.bi.bi-truck
+                h3 Reliable Delivery
+                p Efficient logistics and dependable service so your produce arrives fresh and on time.
+
+      section.steps-section
+        .container
+          .section-heading.text-center
+            span.section-kicker How it works
+            h2 Start buying or selling in three simple steps
+          .row.g-4.justify-content-center
+            .col-md-4
+              .step-card
+                .step-number 1
+                h3 Create an Account
+                p Sign up as a customer or farmer and set up your profile in minutes.
+            .col-md-4
+              .step-card
+                .step-number 2
+                h3 Browse & Order
+                p Explore fresh produce, compare prices, and place orders directly from local sellers.
+            .col-md-4
+              .step-card
+                .step-number 3
+                h3 Receive Fresh Produce
+                p Enjoy convenient delivery and a better farm-to-market experience.
+
+      section.categories-section
+        .container
+          .section-heading.text-center
+            span.section-kicker Featured categories
+            h2 Explore today’s most popular produce
+          .row.g-4
+            .col-sm-6.col-lg-3
+              a.category-card(href="/products/market")
+                .category-icon
+                  i.bi.bi-flower1
+                h3 Vegetables
+                p Fresh greens, tomatoes, onions and more
+            .col-sm-6.col-lg-3
+              a.category-card(href="/products/market")
+                .category-icon
+                  i.bi.bi-apple
+                h3 Fruits
+                p Mangoes, bananas, oranges and seasonal favorites
+            .col-sm-6.col-lg-3
+              a.category-card(href="/products/market")
+                .category-icon
+                  i.bi.bi-seedling
+                h3 Grains
+                p Rice, maize, millet and staple grain essentials
+            .col-sm-6.col-lg-3
+              a.category-card(href="/products/market")
+                .category-icon
+                  i.bi.bi-cup-hot
+                h3 Dairy
+                p Milk, eggs and fresh farm nutrition essentials
+
+      section.cta-section
+        .container
+          .cta-banner
+            .row.align-items-center.g-4
+              .col-lg-8
+                span.section-kicker Grow together
+                h2 Ready to buy fresh food or sell your harvest with confidence?
+                p Join Farm Connect and connect with a community built around quality, trust, and local growth.
+              .col-lg-4.text-lg-end
+                a.btn.btn-light.btn-lg.rounded-pill(href="/register") Get Started
+
+    footer.site-footer
       .container
-        // Top Row
-        .d-flex.justify-content-between.mb-3
-          a.text-decoration-none(href="#") Terms
-          a.text-decoration-none(href="#") Privacy Policy
+        .row.g-4
+          .col-md-4
+            .footer-brand
+              h3 Farm Connect
+              p A trusted marketplace connecting Ugandan farmers with families and businesses seeking fresh produce.
+          .col-md-2
+            h4 Quick Links
+            ul
+              li
+                a(href="/") Home
+              li
+                a(href="/about") About
+              li
+                a(href="/products/market") Market
+              li
+                a(href="/contact") Contact
+          .col-md-3
+            h4 Support
+            ul
+              li
+                a(href="#") Terms
+              li
+                a(href="#") Privacy
+              li
+                a(href="/login") Login
+              li
+                a(href="/register") Register
+          .col-md-3
+            h4 Follow Us
+            .social-links
+              a(href="#", aria-label="Facebook")
+                i.bi.bi-facebook
+              a(href="#", aria-label="Instagram")
+                i.bi.bi-instagram
+              a(href="#", aria-label="X")
+                i.bi.bi-twitter-x
+              a(href="#", aria-label="WhatsApp")
+                i.bi.bi-whatsapp
+        .footer-bottom
+          p &copy; 2025 Farm Connect. All rights reserved.
 
-        // Social Icons
-        .d-flex.justify-content-center.mb-2
-          a.mx-2(href="#")
-            i.bi.bi-x
-          a.mx-2(href="https://www.facebook.com/wandera.henry")
-            i.bi.bi-facebook
-          a.mx-2(href="#")
-            i.bi.bi-youtube
-
-    // Footer
-    footer.text-center.fixed-footer
-      .container
-        p.mb-0 &copy; 2025 FarmConnect. All rights reserved.
-
-    // Scripts
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js")
